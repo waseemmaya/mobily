@@ -30,6 +30,7 @@ const FinalNavigator = createSwitchNavigator(
     App: AppStack,
   },
   {
+    headerMode: 'none',
     initialRouteName: 'AuthLoading'
   }
 );

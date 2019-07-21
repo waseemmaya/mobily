@@ -14,13 +14,15 @@ const DrawerOtherStack = createStackNavigator(
     ProfileSettings,
   },
   {
-    initialRouteName: 'HomeScreen'
+    initialRouteName: 'HomeScreen',
+    headerMode: 'none'
   }
 );
 
 const drawerOptions = {
   contentComponent: Drawer,
   drawerWidth: width - 100,
+  headerMode: 'none',
   initialRouteName: 'DrawerOtherStack'
 };
 

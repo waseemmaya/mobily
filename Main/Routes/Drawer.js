@@ -21,22 +21,25 @@ export default class Drawer extends Component {
   render() {
     return (
       <View>
-        <TouchableOpacity
+        <Button
           onPress={() => {
             this.navigate('ProfileSettings');
           }}
         >
-          <Text>Update Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          <Text> Update Profile </Text>
+        </Button>
+
+        <Button
           onPress={() => {
-            this.navigate('ProfileSettings');
+            this.navigate('MyAds');
           }}
         >
-          <Button onPress={this.handleLogout}>
-            <Text> Logout </Text>
-          </Button>
-        </TouchableOpacity>
+          <Text> My Ads </Text>
+        </Button>
+
+        <Button onPress={this.handleLogout}>
+          <Text> Logout </Text>
+        </Button>
       </View>
     );
   }
