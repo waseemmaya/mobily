@@ -7,7 +7,6 @@ import { width } from '../Constants/Dimensions';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DotIndicator } from 'react-native-indicators';
 
-
 const API_KEY = 'AIzaSyAOYG1Ai4mZy6L-ifZgQ8bzS87vA6v3JdA';
 const END_POINT = 'https://www.googleapis.com/youtube/v3/search/?';
 let API_KEY_END_POINT = `${END_POINT}key=${API_KEY}`;
@@ -16,7 +15,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSearchingEnabled : false,
+      isSearchingEnabled: false,
       vidsArr: [],
       searchQuery: 'Atif Aslam',
       nextPage: '',
@@ -25,60 +24,53 @@ export default class Home extends Component {
     };
   }
   render() {
-    const {isSearchingEnabled, vidsArr}= this.state;
-    if (vidsArr.length < 1) {
-      return <DotIndicator color={primaryColor} size={10} />
-       
-    }
+    const { isSearchingEnabled, vidsArr } = this.state;
+
     return (
       <Block style={{ flex: 1 }}>
         <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
         <Block>{this.renderSearchBar()}</Block>
-        <ScrollView>
-          {!isSearchingEnabled && <Block>
-            {this.state.vidsArr.map((v, i) => {
-              return (
-                <TouchableOpacity key={i} activeOpacity={0.6}
-                onPress={() => this.props.navigation.navigate("ViewAd")}
-                >
-                  {/* <Image
-                    style={{ height: 210 }}
-                    source={{ uri: v.snippet.thumbnails.high.url }}
-                  />
-                  <Text
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                    style={{ marginBottom: 10, fontSize: 18 }}
-                  >
-                    {v.snippet.title}
-                  </Text> */}
-                  <Block>
-                    <Card
-                      card
-                      shadow
-                      borderless
-                      neutral
-                      fullBackgroundImage
-                      image={v.snippet.thumbnails.high.url}
-                      authorImageSrc={v.snippet.thumbnails.high.url}
-                      title={v.snippet.title}
-                      authorSubTitle="420 minutes ago"
-                    />
-                  </Block>
-                </TouchableOpacity>
-              );
-            })}
-          </Block>}
-        </ScrollView>
+        {vidsArr.length < 1 && <DotIndicator color={primaryColor} size={10} />}
+        {vidsArr.length > 0 && (
+          <ScrollView>
+            {!isSearchingEnabled && (
+              <Block>
+                {this.state.vidsArr.map((v, i) => {
+                  return (
+                    <TouchableOpacity
+                      key={i}
+                      activeOpacity={0.6}
+                      onPress={() => this.props.navigation.navigate('ViewAd')}
+                    >
+                      <Block>
+                        <Card
+                          card
+                          shadow
+                          borderless
+                          neutral
+                          fullBackgroundImage
+                          image={v.snippet.thumbnails.high.url}
+                          authorImageSrc={v.snippet.thumbnails.high.url}
+                          title={v.snippet.title}
+                          authorSubTitle="420 minutes ago"
+                        />
+                      </Block>
+                    </TouchableOpacity>
+                  );
+                })}
+              </Block>
+            )}
+          </ScrollView>
+        )}
       </Block>
     );
   }
 
-  componentWillUnmount = ()=> {
+  componentWillUnmount = () => {
     this.setState({
-      isSearchingEnabled : false
-    })
-  }
+      isSearchingEnabled: false,
+    });
+  };
 
   search = () => {
     var { vidsArr, searchQuery } = this.state;
@@ -102,7 +94,7 @@ export default class Home extends Component {
           nextPage: val.nextPageToken,
           vidsArr: newArr,
           searching: false,
-          isSearchingEnabled : false
+          isSearchingEnabled: false,
         });
       });
   };
@@ -125,6 +117,7 @@ export default class Home extends Component {
       .then(res => res.json())
       .then(val => {
         let newArr = vidsArr.concat(val.items);
+        console.debug('debug');
         this.setState({
           nextPage: val.nextPageToken,
           vidsArr: newArr,
@@ -142,7 +135,7 @@ export default class Home extends Component {
           onChangeText={searchQuery => this.setState({ searchQuery })}
           placeholder="Search..."
           borderless
-          onFocus={()=> this.setState({isSearchingEnabled : true})}
+          onFocus={() => this.setState({ isSearchingEnabled: true })}
           placeholderTextColor={grayColor}
           onSubmitEditing={this.search}
           style={{
@@ -157,7 +150,7 @@ export default class Home extends Component {
             <Icon
               onPress={() => {
                 if (searchQuery.length > 0) {
-                  this.setState({ searchQuery: '', isSearchingEnabled : false });
+                  this.setState({ searchQuery: '', isSearchingEnabled: false });
                   // Keyboard.dismiss();
                 }
               }}

@@ -43,12 +43,26 @@ const MessagesStack = createStackNavigator(
 const HomeStack = createStackNavigator(
   {
     Home: { screen: Home },
-    ViewAd: { screen: ViewAd },
+    ViewAd: { screen: ViewAd, navigationOptions: { tabBarVisible: false } },
   },
   {
     headerMode: 'none'
   }
 );
+
+//  to hide
+// HomeStack.navigationOptions = ({ navigation }) => {
+//   let tabBarVisible = true;
+//   if (navigation.state.index > 0) {
+//       return {
+//       tabBarVisible: false
+//     };
+//   }
+
+//   return {
+//     tabBarVisible,
+//   };
+// };
 
 // Ads Tab and its stack childs
 const AdsStack = createStackNavigator(

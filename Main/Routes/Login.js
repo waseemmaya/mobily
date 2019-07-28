@@ -172,6 +172,7 @@ export default class Login extends Component {
     const { email, password } = this.state;
     this.props.navigation.navigate('Home');
     const res = await onLogin(email, password);
+    console.warn(res)
     if (res) {
     } else {
       this.setState({
