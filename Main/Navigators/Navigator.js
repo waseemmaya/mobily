@@ -6,7 +6,7 @@ import {
 import Signup from '../Routes/Signup';
 import Login from '../Routes/Login';
 import AuthLoading from '../Routes/AuthLoading';
-import DrawerNavigator from './DrawerNavigator';
+import TabNavigator from './TabNavigator';
 
 const AuthStack = createStackNavigator(
   {
@@ -18,7 +18,7 @@ const AuthStack = createStackNavigator(
 
 const AppStack = createStackNavigator(
   {
-    HomeScreen: { screen: DrawerNavigator },
+    Home: { screen: TabNavigator },
   },
   { headerMode: 'none' }
 );

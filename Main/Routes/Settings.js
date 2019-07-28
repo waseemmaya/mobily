@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { View, Text, Button } from 'native-base';
 import { onLogout } from '../Helpers/AuthFunctions';
 
-export default class ProfileSettings extends Component {
+export default class Settings extends Component {
   render() {
     return (
       <View>
-        <Text> ProfileSettings </Text>
+        <Text> Settings </Text>
         <Button onPress={this.handleLogout}>
           <Text> Logout </Text>
         </Button>
@@ -16,6 +16,7 @@ export default class ProfileSettings extends Component {
 
   handleLogout = () => {
     const logoutRes = onLogout();
+    // this.props.navigation.navigate('ViewAd');
     return this.props.navigation.navigate('Login');
   };
 }

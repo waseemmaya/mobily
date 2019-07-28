@@ -2,7 +2,7 @@ import React from 'react';
 import { StatusBar, View } from 'react-native';
 import { DotIndicator } from 'react-native-indicators';
 import { isLoggedin } from '../Helpers/AuthFunctions';
-import { secondaryColor } from '../Constants/Colors';
+import { primaryColor } from '../Constants/Colors';
 import firebase from 'react-native-firebase';
 
 export default class AuthLoading extends React.Component {
@@ -10,7 +10,7 @@ export default class AuthLoading extends React.Component {
     return (
       <View
         style={{
-          backgroundColor: secondaryColor,
+          backgroundColor: primaryColor,
           flex: 1,
           flexDirection: 'column',
           justifyContent: 'center'
@@ -27,12 +27,15 @@ export default class AuthLoading extends React.Component {
     const res = await isLoggedin();
 
     console.log('firebase: ', firebase);
-    firebase.auth().signInAnonymously().then((user) => {
-    console.log('Firebase user: ', user);
-    this.props.navigation.navigate(res ? 'HomeScreen' : 'Login');
-  }).catch((err)=> {
-    console.log('err: ', err);
-  })
-
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(user => {
+        console.log('Firebase user: ', user);
+        this.props.navigation.navigate(res ? 'Home' : 'Login');
+      })
+      .catch(err => {
+        console.log('err: ', err);
+      });
   };
 }

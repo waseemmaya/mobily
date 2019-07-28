@@ -6,7 +6,7 @@ import { List, Snackbar } from 'react-native-paper';
 import { TextField } from 'react-native-material-textfield';
 
 import { onLogin } from '../Helpers/AuthFunctions';
-import { primaryColor, secondaryColor, lightColor } from '../Constants/Colors';
+import { primaryColor, facebookColor, googleColor } from '../Constants/Colors';
 
 export default class Login extends Component {
   constructor(props) {
@@ -14,16 +14,15 @@ export default class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      loginErr : false,
-      successLogin : false,
+      loginErr: false,
+      successLogin: false,
     };
   }
   render() {
-    let { email, password, loginErr,successLogin } = this.state;
+    let { email, password, loginErr, successLogin } = this.state;
     return (
       <ScrollView>
-        <Block  style={{ flex: 1, justifyContent : "space-between" }}>
-    
+        <Block style={{ flex: 1, justifyContent: 'space-between' }}>
           <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
           <Block
             style={{
@@ -38,7 +37,7 @@ export default class Login extends Component {
               source={require('../Assets/logo.png')}
             />
           </Block>
-         
+
           <Block
             style={{
               margin: 15,
@@ -48,7 +47,7 @@ export default class Login extends Component {
           >
             <TextField
               value={email}
-              onChangeText={ (email) => this.setState({ email }) }
+              onChangeText={email => this.setState({ email })}
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               returnKeyType="next"
@@ -57,7 +56,7 @@ export default class Login extends Component {
 
             <TextField
               value={password}
-              onChangeText={ (password) => this.setState({ password }) }
+              onChangeText={password => this.setState({ password })}
               secureTextEntry={true}
               autoCapitalize="none"
               autoCorrect={false}
@@ -67,13 +66,15 @@ export default class Login extends Component {
               label="Password"
             />
             <Button
-             style={{
-              width: 100,
-              marginTop: 15,
-              backgroundColor: primaryColor,
-            }}
-            onPress={this.handleLogin}
-            >Login</Button>
+              style={{
+                width: 100,
+                marginTop: 15,
+                backgroundColor: primaryColor,
+              }}
+              onPress={this.handleLogin}
+            >
+              Login
+            </Button>
             {/* <Button
               style={{
                 width: 100,
@@ -90,8 +91,7 @@ export default class Login extends Component {
           <Block style={{ flex: 1, marginTop: 20 }}>
             {this.renderAuthProvide()}
           </Block>
-        
-        
+
           <Block
             style={{
               marginTop: 15,
@@ -102,44 +102,42 @@ export default class Login extends Component {
               flexDirection: 'row'
             }}
           >
-            <Text p style={{ fontSize: 13, color: 'grey', marginRight : 5 }}>
+            <Text p style={{ fontSize: 13, color: 'grey', marginRight: 5 }}>
               Dont have an account?
             </Text>
-        <TouchableOpacity onPress={()=> this.props.navigation.navigate("Signup")}>
-            <Text p bold style={{ fontSize: 14, color: 'grey' }}>
-              Sign up
-            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Signup')}
+            >
+              <Text p bold style={{ fontSize: 14, color: 'grey' }}>
+                Sign up
+              </Text>
             </TouchableOpacity>
-           
-            
-        
           </Block>
-          <Block bottom style={{marginTop : 70}}>
-         <Snackbar
-          visible={loginErr}
-          onDismiss={() => this.setState({ loginErr: false })}
-          action={{
-            label: 'X',
-            onPress: () => {
-              this.setState({
-                loginErr : false
-              })
-            },
-          }}
-          >
-          {`User doesn't exist.`}
-        </Snackbar>
-         </Block>
+          <Block bottom style={{ marginTop: 70 }}>
+            <Snackbar
+              visible={loginErr}
+              onDismiss={() => this.setState({ loginErr: false })}
+              action={{
+                label: 'X',
+                onPress: () => {
+                  this.setState({
+                    loginErr: false,
+                  });
+                },
+              }}
+            >
+              {"User doesn't exist."}
+            </Snackbar>
           </Block>
-        
+        </Block>
       </ScrollView>
     );
   }
 
   renderAuthProvide = () => {
     let data = [
-      { name: 'Facebook', color: '#3A5999' },
-      { name: 'Google', color: primaryColor },
+      { name: 'Facebook', color: facebookColor },
+      { name: 'Google', color: googleColor },
     ];
     return data.map((val, index) => {
       return (
@@ -171,14 +169,14 @@ export default class Login extends Component {
   };
 
   handleLogin = async () => {
-    const {email,password} = this.state;
-    const res = await onLogin(email,password);
+    const { email, password } = this.state;
+    this.props.navigation.navigate('Home');
+    const res = await onLogin(email, password);
     if (res) {
-      this.props.navigation.navigate('HomeScreen');
     } else {
       this.setState({
-        loginErr : true
-      })
+        loginErr: true,
+      });
     }
   };
 }

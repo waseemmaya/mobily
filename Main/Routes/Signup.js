@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Text,Button,Block } from 'galio-framework'
+import { Text, Button, Block } from 'galio-framework';
 import { StatusBar, Image, ScrollView } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
-import { onLogin } from '../Helpers/AuthFunctions';
-import { primaryColor, secondaryColor, lightColor } from '../Constants/Colors';
+import { primaryColor } from '../Constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { onSignup } from '../Helpers/AuthFunctions';
 
@@ -16,11 +15,18 @@ export default class Signup extends Component {
       email: '',
       password: '',
       phone: '',
-      againPassword : ""
+      againPassword: ''
     };
   }
   render() {
-    let { email, password, firstName, phone, lastName,againPassword } = this.state;
+    let {
+      email,
+      password,
+      firstName,
+      phone,
+      lastName,
+      againPassword,
+    } = this.state;
     return (
       <ScrollView>
         <Block style={{ flex: 1 }}>
@@ -48,7 +54,7 @@ export default class Signup extends Component {
             <Block style={{ flexDirection: 'row' }}>
               <Block style={{ flex: 1 }}>
                 <TextField
-                  onChangeText={ (firstName) => this.setState({ firstName }) }
+                  onChangeText={firstName => this.setState({ firstName })}
                   value={firstName}
                   autoCorrect={false}
                   enablesReturnKeyAutomatically={true}
@@ -61,7 +67,7 @@ export default class Signup extends Component {
               <Block style={{ flex: 1 }}>
                 <TextField
                   value={lastName}
-                  onChangeText={ (lastName) => this.setState({ lastName }) }
+                  onChangeText={lastName => this.setState({ lastName })}
                   autoCorrect={false}
                   enablesReturnKeyAutomatically={true}
                   returnKeyType="next"
@@ -73,7 +79,7 @@ export default class Signup extends Component {
 
             <TextField
               value={email}
-              onChangeText={ (email) => this.setState({ email }) }
+              onChangeText={email => this.setState({ email })}
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               returnKeyType="next"
@@ -82,7 +88,7 @@ export default class Signup extends Component {
             <TextField
               value={phone}
               autoCorrect={false}
-              onChangeText={ (phone) => this.setState({ phone }) }
+              onChangeText={phone => this.setState({ phone })}
               enablesReturnKeyAutomatically={true}
               returnKeyType="next"
               label="Phone"
@@ -91,7 +97,7 @@ export default class Signup extends Component {
             <TextField
               value={password}
               secureTextEntry={true}
-              onChangeText={ (password) => this.setState({ password }) }
+              onChangeText={password => this.setState({ password })}
               autoCapitalize="none"
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
@@ -101,7 +107,7 @@ export default class Signup extends Component {
             />
             <TextField
               value={againPassword}
-              onChangeText={ (againPassword) => this.setState({ againPassword }) }
+              onChangeText={againPassword => this.setState({ againPassword })}
               secureTextEntry={true}
               autoCapitalize="none"
               autoCorrect={false}
@@ -132,13 +138,15 @@ export default class Signup extends Component {
               flexDirection: 'row'
             }}
           >
-           <Text p style={{ fontSize: 13, color: 'grey', marginRight : 5 }}>
+            <Text p style={{ fontSize: 13, color: 'grey', marginRight: 5 }}>
               Already have an account?
             </Text>
-            <TouchableOpacity onPress={()=> this.props.navigation.navigate("Login")}>
-            <Text p bold style={{ fontSize: 14, color: 'grey' }}>
-              Sign in
-            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Login')}
+            >
+              <Text p bold style={{ fontSize: 14, color: 'grey' }}>
+                Sign in
+              </Text>
             </TouchableOpacity>
           </Block>
         </Block>
@@ -147,14 +155,26 @@ export default class Signup extends Component {
   }
 
   handleSignup = async () => {
-    let { email, password, firstName, phone, lastName,againPassword } = this.state;
+    let {
+      email,
+      password,
+      firstName,
+      phone,
+      lastName,
+      againPassword,
+    } = this.state;
 
     let signupObj = {
-      email,password,againPassword,firstName,lastName,phone
-    }
+      email,
+      password,
+      againPassword,
+      firstName,
+      lastName,
+      phone,
+    };
 
     const res = await onSignup(signupObj);
     // console.log('res signup --->: ', res);
-    // return this.props.navigation.navigate(res ? 'HomeScreen' : 'Signup');
+    // return this.props.navigation.navigate(res ? 'Home' : 'Signup');
   };
 }

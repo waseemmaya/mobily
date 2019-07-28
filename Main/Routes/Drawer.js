@@ -23,14 +23,14 @@ export default class Drawer extends Component {
       <View>
         <Button
           onPress={() => {
-            this.navigate('HomeScreen');
+            this.navigate('Home');
           }}
         >
           <Text> Home </Text>
         </Button>
         <Button
           onPress={() => {
-            this.navigate('ProfileSettings');
+            this.navigate('Settings');
           }}
         >
           <Text> Update Profile </Text>
@@ -38,7 +38,7 @@ export default class Drawer extends Component {
 
         <Button
           onPress={() => {
-            this.navigate('MyAds');
+            this.navigate('Ads');
           }}
         >
           <Text> My Ads </Text>
