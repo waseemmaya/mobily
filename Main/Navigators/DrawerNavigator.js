@@ -1,4 +1,4 @@
-import { createDrawerNavigator, createStackNavigator } from 'react-navigation';
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import React from 'react';
 import MyAds from '../Routes/MyAds';
 import ProfileSettings from '../Routes/ProfileSettings';
@@ -7,10 +7,10 @@ import Drawer from '../Routes/Drawer';
 import { width } from '../Constants/Dimensions';
 import { Icon } from 'native-base';
 
-const DrawerOtherStack = createStackNavigator(
+const DrawerOtherStack = createBottomTabNavigator(
   {
-    HomeScreen,
     MyAds,
+    HomeScreen,
     ProfileSettings,
   },
   {
@@ -19,16 +19,6 @@ const DrawerOtherStack = createStackNavigator(
   }
 );
 
-const drawerOptions = {
-  contentComponent: Drawer,
-  drawerWidth: width - 100,
-  headerMode: 'none',
-  initialRouteName: 'DrawerOtherStack'
-};
-
-const DrawerNavigator = createDrawerNavigator(
-  { DrawerOtherStack },
-  drawerOptions
-);
+const DrawerNavigator = createAppContainer(DrawerOtherStack);
 
 export default DrawerNavigator;

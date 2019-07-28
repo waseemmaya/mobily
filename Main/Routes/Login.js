@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text } from 'native-base';
-
-import { StatusBar, Image, ScrollView } from 'react-native';
-import { Button, List, Avatar } from 'react-native-paper';
-import { onLogin } from '../Helpers/AuthFunctions';
+import { Text, Button, Block } from 'galio-framework';
+import { StatusBar, Image, ScrollView, Switch } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { List, Snackbar } from 'react-native-paper';
 import { TextField } from 'react-native-material-textfield';
+
+import { onLogin } from '../Helpers/AuthFunctions';
 import { primaryColor, secondaryColor, lightColor } from '../Constants/Colors';
 
 export default class Login extends Component {
@@ -12,16 +13,19 @@ export default class Login extends Component {
     super(props);
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      loginErr : false,
+      successLogin : false,
     };
   }
   render() {
-    let { email, password } = this.state;
+    let { email, password, loginErr,successLogin } = this.state;
     return (
       <ScrollView>
-        <View style={{ flex: 1 }}>
+        <Block  style={{ flex: 1, justifyContent : "space-between" }}>
+    
           <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
-          <View
+          <Block
             style={{
               flex: 1,
               flexDirection: 'row',
@@ -33,8 +37,9 @@ export default class Login extends Component {
               style={{ width: 200, height: 200 }}
               source={require('../Assets/logo.png')}
             />
-          </View>
-          <View
+          </Block>
+         
+          <Block
             style={{
               margin: 15,
               marginTop: 18,
@@ -43,6 +48,7 @@ export default class Login extends Component {
           >
             <TextField
               value={email}
+              onChangeText={ (email) => this.setState({ email }) }
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               returnKeyType="next"
@@ -51,6 +57,7 @@ export default class Login extends Component {
 
             <TextField
               value={password}
+              onChangeText={ (password) => this.setState({ password }) }
               secureTextEntry={true}
               autoCapitalize="none"
               autoCorrect={false}
@@ -60,6 +67,14 @@ export default class Login extends Component {
               label="Password"
             />
             <Button
+             style={{
+              width: 100,
+              marginTop: 15,
+              backgroundColor: primaryColor,
+            }}
+            onPress={this.handleLogin}
+            >Login</Button>
+            {/* <Button
               style={{
                 width: 100,
                 marginTop: 15,
@@ -70,14 +85,16 @@ export default class Login extends Component {
               onPress={() => console.log('Pressed')}
             >
               Login
-            </Button>
-          </View>
-          <View style={{ flex: 1, marginTop: 20 }}>
+            </Button> */}
+          </Block>
+          <Block style={{ flex: 1, marginTop: 20 }}>
             {this.renderAuthProvide()}
-          </View>
-          <View
+          </Block>
+        
+        
+          <Block
             style={{
-              marginTop: 10,
+              marginTop: 15,
               flexDirection: 'column',
               flexWrap: 'nowrap',
               justifyContent: 'center',
@@ -85,59 +102,83 @@ export default class Login extends Component {
               flexDirection: 'row'
             }}
           >
-            <Text style={{ fontSize: 13, color: 'grey' }}>
+            <Text p style={{ fontSize: 13, color: 'grey', marginRight : 5 }}>
               Dont have an account?
             </Text>
-            <Button
-              style={{
-                marginLeft: -10,
-              }}
-              mode="text"
-              onPress={() => this.props.navigation.navigate('Signup')}
-            >
-              Sign up here
-            </Button>
-          </View>
-        </View>
+        <TouchableOpacity onPress={()=> this.props.navigation.navigate("Signup")}>
+            <Text p bold style={{ fontSize: 14, color: 'grey' }}>
+              Sign up
+            </Text>
+            </TouchableOpacity>
+           
+            
+        
+          </Block>
+          <Block bottom style={{marginTop : 70}}>
+         <Snackbar
+          visible={loginErr}
+          onDismiss={() => this.setState({ loginErr: false })}
+          action={{
+            label: 'X',
+            onPress: () => {
+              this.setState({
+                loginErr : false
+              })
+            },
+          }}
+          >
+          {`User doesn't exist.`}
+        </Snackbar>
+         </Block>
+          </Block>
+        
       </ScrollView>
     );
   }
 
   renderAuthProvide = () => {
     let data = [
-      { name: 'Facebook', color: '#3A5999', src: '../Assets/fb1.png' },
-      { name: 'Google', color: primaryColor, src: '../Assets/google1.png' },
+      { name: 'Facebook', color: '#3A5999' },
+      { name: 'Google', color: primaryColor },
     ];
-    return data.map(val => {
+    return data.map((val, index) => {
       return (
-        <List.Item
-          titleStyle={{ color: 'white' }}
-          style={{
-            borderRadius: 4,
-            backgroundColor: val.color,
-            marginTop: 10,
-            marginLeft: 15,
-            marginRight: 15,
-          }}
-          title={`Login With ${val.name}`}
-          left={props => (
-            <Image
-              style={{ width: 40, height: 40 }}
-              source={
-                val.name === 'Facebook'
-                  ? require('../Assets/fb1.png')
-                  : require('../Assets/google1.png')
-              }
-            />
-          )}
-        />
+        <TouchableOpacity key={index} style={{}}>
+          <List.Item
+            titleStyle={{ color: 'white' }}
+            style={{
+              borderRadius: 6,
+              backgroundColor: val.color,
+              marginTop: 10,
+              marginLeft: 15,
+              marginRight: 15,
+            }}
+            title={`Login With ${val.name}`}
+            left={props => (
+              <Image
+                style={{ width: 40, height: 40 }}
+                source={
+                  val.name === 'Facebook'
+                    ? require('../Assets/fb.png')
+                    : require('../Assets/google.png')
+                }
+              />
+            )}
+          />
+        </TouchableOpacity>
       );
     });
   };
 
   handleLogin = async () => {
-    const res = await onLogin();
-    console.log('res login --->: ', res);
-    return this.props.navigation.navigate(res ? 'HomeScreen' : 'Signup');
+    const {email,password} = this.state;
+    const res = await onLogin(email,password);
+    if (res) {
+      this.props.navigation.navigate('HomeScreen');
+    } else {
+      this.setState({
+        loginErr : true
+      })
+    }
   };
 }

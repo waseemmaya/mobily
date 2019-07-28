@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "942358934460",
+    "firebase_url": "https://mobily-app-test.firebaseio.com",
+    "project_id": "mobily-app-test",
+    "storage_bucket": "mobily-app-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942358934460:android:d484c50ca898cba5",
+        "android_client_info": {
+          "package_name": "com.mobily"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942358934460-0l574lnuqn4tusunvu5n4tpjhudieci3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXXpDbkE3SEosJjU1jEPxRh1Hm5QSK7Kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942358934460-0l574lnuqn4tusunvu5n4tpjhudieci3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

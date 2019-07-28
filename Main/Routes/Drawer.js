@@ -23,6 +23,13 @@ export default class Drawer extends Component {
       <View>
         <Button
           onPress={() => {
+            this.navigate('HomeScreen');
+          }}
+        >
+          <Text> Home </Text>
+        </Button>
+        <Button
+          onPress={() => {
             this.navigate('ProfileSettings');
           }}
         >
