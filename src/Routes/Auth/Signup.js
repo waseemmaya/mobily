@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Text, Button, Block } from 'galio-framework';
 import { StatusBar, Image, ScrollView } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
-import { primaryColor } from '../Constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { onSignup } from '../Helpers/AuthFunctions';
+import { primaryColor } from '../../Constants/Colors';
+import { onSignup } from '../../Helpers/AuthFunctions';
 
 export default class Signup extends Component {
   constructor(props) {
@@ -41,7 +41,7 @@ export default class Signup extends Component {
           >
             <Image
               style={{ width: 150, height: 150 }}
-              source={require('../Assets/logo.png')}
+              source={require('../../Assets/logo.png')}
             />
           </Block>
 

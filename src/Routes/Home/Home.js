@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Icon } from 'native-base';
-import { Text, Block, Input, Card } from 'galio-framework';
-import { StatusBar, Keyboard, Image, TouchableOpacity } from 'react-native';
-import { primaryColor, grayColor } from '../Constants/Colors';
-import { width } from '../Constants/Dimensions';
+import { Block, Input, Card } from 'galio-framework';
+import { StatusBar, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DotIndicator } from 'react-native-indicators';
+import { width } from '../../Constants/Dimensions';
+import { primaryColor, grayColor } from '../../Constants/Colors';
 
 const API_KEY = 'AIzaSyAOYG1Ai4mZy6L-ifZgQ8bzS87vA6v3JdA';
 const END_POINT = 'https://www.googleapis.com/youtube/v3/search/?';
@@ -50,9 +50,7 @@ export default class Home extends Component {
                           neutral
                           fullBackgroundImage
                           image={v.snippet.thumbnails.high.url}
-                          authorImageSrc={v.snippet.thumbnails.high.url}
                           title={v.snippet.title}
-                          authorSubTitle="420 minutes ago"
                         />
                       </Block>
                     </TouchableOpacity>
@@ -130,6 +128,11 @@ export default class Home extends Component {
     const { searchQuery } = this.state;
     return (
       <Block style={{ height: 70, backgroundColor: primaryColor }}>
+        {/* <Icon
+            style={{ width : 10,fontSize: 21 }}
+            name="back"
+            type="AntDesign"
+          /> */}
         <Input
           value={searchQuery}
           onChangeText={searchQuery => this.setState({ searchQuery })}
@@ -150,7 +153,7 @@ export default class Home extends Component {
             <Icon
               onPress={() => {
                 if (searchQuery.length > 0) {
-                  this.setState({ searchQuery: '', isSearchingEnabled: false });
+                  this.setState({ searchQuery: '' });
                   // Keyboard.dismiss();
                 }
               }}

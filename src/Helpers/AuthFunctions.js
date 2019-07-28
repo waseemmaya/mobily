@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import API from '../API/API';
+
 export const USER_TOKEN = 'UserAuthToken';
 
 export const onSignup = async signupObj => {

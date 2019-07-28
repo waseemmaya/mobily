@@ -1,9 +1,9 @@
 import React from 'react';
 import { StatusBar, View } from 'react-native';
 import { DotIndicator } from 'react-native-indicators';
-import { isLoggedin } from '../Helpers/AuthFunctions';
-import { primaryColor } from '../Constants/Colors';
 import firebase from 'react-native-firebase';
+import { isLoggedin } from '../../Helpers/AuthFunctions';
+import { primaryColor } from '../../Constants/Colors';
 
 export default class AuthLoading extends React.Component {
   render() {

@@ -4,9 +4,10 @@ import { StatusBar, Image, ScrollView, Switch } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { List, Snackbar } from 'react-native-paper';
 import { TextField } from 'react-native-material-textfield';
+import { onLogin } from '../../Helpers/AuthFunctions';
+import { primaryColor, facebookColor, googleColor } from '../../Constants/Colors';
 
-import { onLogin } from '../Helpers/AuthFunctions';
-import { primaryColor, facebookColor, googleColor } from '../Constants/Colors';
+
 
 export default class Login extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ export default class Login extends Component {
           >
             <Image
               style={{ width: 200, height: 200 }}
-              source={require('../Assets/logo.png')}
+              source={require('../../Assets/logo.png')}
             />
           </Block>
 
@@ -157,8 +158,8 @@ export default class Login extends Component {
                 style={{ width: 40, height: 40 }}
                 source={
                   val.name === 'Facebook'
-                    ? require('../Assets/fb.png')
-                    : require('../Assets/google.png')
+                    ? require('../../Assets/fb.png')
+                    : require('../../Assets/google.png')
                 }
               />
             )}

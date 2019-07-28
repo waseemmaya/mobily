@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Button } from 'native-base';
-import { onLogout } from '../Helpers/AuthFunctions';
+import { onLogout } from '../../Helpers/AuthFunctions';
 
 export default class Settings extends Component {
   render() {

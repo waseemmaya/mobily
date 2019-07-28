@@ -4,14 +4,15 @@ import {
   createStackNavigator,
 } from 'react-navigation';
 import React from 'react';
-import Ads from '../Routes/Ads';
-import Settings from '../Routes/Settings';
-import Home from '../Routes/Home';
-import Messages from '../Routes/Messages';
 import { Image } from 'react-native';
+import Messages from '../Routes/Messages/Messages';
+import Home from '../Routes/Home/Home';
+import Ads from '../Routes/Ads/Ads';
+import Settings from '../Routes/Settings/Settings';
+import ViewAd from '../Routes/ViewAd/ViewAd';
+import Category from '../Routes/Category/Category';
 import { primaryColor } from '../Constants/Colors';
-import Category from '../Routes/Category';
-import ViewAd from '../Routes/ViewAd';
+
 
 import HomeIcon from '../Assets/TabNavigatorIcons/Home.png';
 import AdsIcon from '../Assets/TabNavigatorIcons/Ads.png';

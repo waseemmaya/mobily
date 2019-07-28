@@ -3,11 +3,10 @@ import {
   createStackNavigator,
   createAppContainer,
 } from 'react-navigation';
-import Signup from '../Routes/Signup';
-import Login from '../Routes/Login';
-import AuthLoading from '../Routes/AuthLoading';
-import TabNavigator from './TabNavigator';
-
+import Signup from './Routes/Auth/Signup';
+import Login from './Routes/Auth/Login';
+import AuthLoading from './Routes/Auth/AuthLoading';
+import TabNavigator from './Navigators/TabNavigator';
 const AuthStack = createStackNavigator(
   {
     Login: { screen: Login },
