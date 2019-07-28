@@ -13,7 +13,6 @@ import ViewAd from '../Routes/ViewAd/ViewAd';
 import Category from '../Routes/Category/Category';
 import { primaryColor } from '../Constants/Colors';
 
-
 import HomeIcon from '../Assets/TabNavigatorIcons/Home.png';
 import AdsIcon from '../Assets/TabNavigatorIcons/Ads.png';
 import ProfileIcon from '../Assets/TabNavigatorIcons/Profile.png';
@@ -43,7 +42,9 @@ const MessagesStack = createStackNavigator(
 // Home Tab and its stack childs
 const HomeStack = createStackNavigator(
   {
-    Home: { screen: Home },
+    Home: {
+      screen: Home,
+    },
     ViewAd: { screen: ViewAd, navigationOptions: { tabBarVisible: false } },
   },
   {
@@ -109,6 +110,13 @@ const TabNavigator = createAppContainer(
       },
 
       defaultNavigationOptions: ({ navigation }) => ({
+        tabBarOnPress: (props) => {
+          console.log('props: ', props);
+          let route = props.navigation.state.routeName
+          console.log('route: ', route);
+          props.navigation.replace(route);
+          // jumpToIndex(scene.index);
+        },
         tabBarIcon: ({ focused, horizontal, tintColor }) => {
           const { routeName } = navigation.state;
 
