@@ -4,6 +4,7 @@ import { Block, Input, Card } from 'galio-framework';
 import { StatusBar, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DotIndicator } from 'react-native-indicators';
+import axios from 'axios';
 import { width } from '../../Constants/Dimensions';
 import { primaryColor, grayColor } from '../../Constants/Colors';
 
@@ -21,48 +22,66 @@ export default class Home extends Component {
       nextPage: '',
       searching: false,
       fetchingMore: false,
+      ads: [],
     };
   }
   render() {
-    const { isSearchingEnabled, vidsArr } = this.state;
+    const { isSearchingEnabled, ads } = this.state;
 
     return (
       <Block style={{ flex: 1 }}>
         <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
         <Block>{this.renderSearchBar()}</Block>
-        {vidsArr.length < 1 && <DotIndicator color={primaryColor} size={10} />}
-        {vidsArr.length > 0 && (
-          <ScrollView>
-            {!isSearchingEnabled && (
-              <Block>
-                {this.state.vidsArr.map((v, i) => {
-                  return (
-                    <TouchableOpacity
-                      key={i}
-                      activeOpacity={0.6}
-                      onPress={() => this.props.navigation.navigate('ViewAd')}
-                    >
-                      <Block>
-                        <Card
-                          card
-                          shadow
-                          borderless
-                          neutral
-                          fullBackgroundImage
-                          image={v.snippet.thumbnails.high.url}
-                          title={v.snippet.title}
-                        />
-                      </Block>
-                    </TouchableOpacity>
-                  );
-                })}
-              </Block>
-            )}
-          </ScrollView>
-        )}
+        {ads.length < 1 && <DotIndicator color={primaryColor} size={10} />}
+
+        <ScrollView>
+          <Block style={{margin : 20}}>
+            {this.state.ads.map((v, i) => {
+              return (
+                <TouchableOpacity
+                  key={i}
+                  activeOpacity={0.6}
+                  onPress={() => this.props.navigation.navigate('ViewAd',{adObj : v})}
+                >
+                  <Block>
+                    <Card
+                      card
+                      shadow
+                      borderless
+                      avatar={v.adsImages[0].thumb}
+                      authorTitle="Offset"
+                      authorSubTitle="420 minutes ago"
+                      neutral
+                      location={v.location}
+                      fullBackgroundImage
+                      caption={v.description}
+                      image={v.adsImages[0].small}
+                      title={v.adTitle}
+                    />
+                    <Block style={{marginTop : 20}}></Block>
+                  </Block>
+                </TouchableOpacity>
+              );
+            })}
+          </Block>
+        </ScrollView>
       </Block>
     );
   }
+
+  componentDidMount = async () => {
+    // let adsAPI = 'http://10.0.2.2:3001/ads';
+    let adsAPI = 'https://mobily-pk.herokuapp.com/ads';
+    
+
+    let data = await axios.get(adsAPI);
+    let adsArr = data.data;
+    console.log('adsArr: ', adsArr);
+    this.setState({
+      ads: adsArr,
+    });
+    // this.initialsearch();
+  };
 
   componentWillUnmount = () => {
     this.setState({
@@ -97,9 +116,7 @@ export default class Home extends Component {
       });
   };
 
-  componentDidMount() {
-    this.initialsearch();
-  }
+ 
 
   initialsearch = () => {
     this.setState({

@@ -4,6 +4,10 @@ import { DotIndicator } from 'react-native-indicators';
 import firebase from 'react-native-firebase';
 import { isLoggedin } from '../../Helpers/AuthFunctions';
 import { primaryColor } from '../../Constants/Colors';
+import {
+  requestCameraPermission,
+  requestGalleryPermission,
+} from '../../Helpers/androidPermissions';
 
 export default class AuthLoading extends React.Component {
   render() {
@@ -24,18 +28,29 @@ export default class AuthLoading extends React.Component {
   }
 
   componentDidMount = async () => {
+    let camPerm = await requestGalleryPermission();
+    let camPerm2 = await requestCameraPermission();
+    console.log('camPerm2: ', camPerm2);
+    console.log('camPerm: ', camPerm);
+
+    this.props.navigation.navigate('Home');
+    // this.props.navigation.navigate(res ? 'Home' : 'Login');
     const res = await isLoggedin();
 
-    console.log('firebase: ', firebase);
-    firebase
-      .auth()
-      .signInAnonymously()
-      .then(user => {
-        console.log('Firebase user: ', user);
-        this.props.navigation.navigate(res ? 'Home' : 'Login');
-      })
-      .catch(err => {
-        console.log('err: ', err);
-      });
+    // if (res) {
+
+    // }
+
+    //   console.log('firebase: ', firebase);
+    //   firebase
+    //     .auth()
+    //     .signInAnonymously()
+    //     .then(user => {
+    //       console.log('Firebase user: ', user);
+    //     })
+    //     .catch(err => {
+    //       console.log('err: ', err);
+    //     });
+    // };
   };
 }
