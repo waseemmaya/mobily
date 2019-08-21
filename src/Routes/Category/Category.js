@@ -6,6 +6,7 @@ import axios from 'axios';
 import { DotIndicator } from 'react-native-indicators';
 import { primaryColor, grayColor } from '../../Constants/Colors';
 import { Snackbar } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default class Category extends Component {
   constructor(props) {
@@ -43,12 +44,14 @@ export default class Category extends Component {
           Upload
         </Button>
         <Block>
+        <ScrollView>
+
           {imagesArrays.length > 0 &&
             imagesArrays.map((val,i) => {
               return (
                 <Image key={i}
                   style={{
-                    borderRadius: 100,
+                    borderRadius: 0,
                     width: 150,
                     height: 150,
                   }}
@@ -56,6 +59,8 @@ export default class Category extends Component {
                 />
               );
             })}
+        </ScrollView>
+
         </Block>
        </Block>}
        {visible &&  <Snackbar duration={4000}

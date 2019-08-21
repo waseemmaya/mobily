@@ -1,8 +1,4 @@
-import {
-  createBottomTabNavigator,
-  createAppContainer,
-  createStackNavigator,
-} from 'react-navigation';
+import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation';
 import React from 'react';
 import { Image } from 'react-native';
 import Messages from '../Routes/Messages/Messages';
@@ -21,36 +17,49 @@ import CategoryIcon from '../Assets/TabNavigatorIcons/Category.png';
 
 // Category Tab and its stack childs
 const CategoryStack = createStackNavigator(
-  {
-    Category: { screen: Category },
-  },
-  {
-    headerMode: 'none'
-  }
+    {
+        Category: { screen: Category }
+    },
+    {
+        headerMode: 'none'
+    }
 );
 
 // Messages Tab and its stack childs
 const MessagesStack = createStackNavigator(
-  {
-    Messages: { screen: Messages },
-  },
-  {
-    headerMode: 'none'
-  }
+    {
+        Messages: { screen: Messages }
+    },
+    {
+        headerMode: 'none'
+    }
 );
 
 // Home Tab and its stack childs
 const HomeStack = createStackNavigator(
-  {
-    Home: {
-      screen: Home,
+    {
+        Home: {
+            screen: Home
+        },
+        ViewAd: {
+            screen: ViewAd
+        }
     },
-    ViewAd: { screen: ViewAd, navigationOptions: { tabBarVisible: false } },
-  },
-  {
-    headerMode: 'none'
-  }
+    {
+        headerMode: 'none'
+    }
 );
+
+HomeStack.navigationOptions = ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+
+    return {
+        tabBarVisible
+    };
+};
 
 //  to hide
 // HomeStack.navigationOptions = ({ navigation }) => {
@@ -68,80 +77,80 @@ const HomeStack = createStackNavigator(
 
 // Ads Tab and its stack childs
 const AdsStack = createStackNavigator(
-  {
-    Ads: { screen: Ads },
-  },
-  {
-    headerMode: 'none'
-  }
+    {
+        Ads: { screen: Ads }
+    },
+    {
+        headerMode: 'none'
+    }
 );
 
 // Settings Tab and its stack childs
 const SettingsStack = createStackNavigator(
-  {
-    Settings: { screen: Settings },
-  },
-  {
-    headerMode: 'none'
-  }
+    {
+        Settings: { screen: Settings }
+    },
+    {
+        headerMode: 'none'
+    }
 );
 
 // Tab Navigator
 const TabNavigator = createAppContainer(
-  createBottomTabNavigator(
-    {
-      Category: { screen: CategoryStack },
-      Messages: { screen: MessagesStack },
-      Home: { screen: HomeStack },
-      Ads: { screen: AdsStack },
-      Settings: { screen: SettingsStack },
-    },
-    {
-      tabBarPosition: 'bottom',
-      swipeEnabled: true,
-      tabBarOptions: {
-        activeTintColor: '#8898AA',
-        activeBackgroundColor: primaryColor,
-        inactiveTintColor: '#666',
-        tabStyle: {
-          fontSize: 12,
-          padding: 3,
+    createBottomTabNavigator(
+        {
+            Category: { screen: CategoryStack },
+            Messages: { screen: MessagesStack },
+            Home: { screen: HomeStack },
+            Ads: { screen: AdsStack },
+            Settings: { screen: SettingsStack }
         },
-      },
+        {
+            tabBarPosition: 'bottom',
+            swipeEnabled: true,
+            tabBarOptions: {
+                activeTintColor: '#8898AA',
+                activeBackgroundColor: primaryColor,
+                inactiveTintColor: '#666',
+                tabStyle: {
+                    fontSize: 12,
+                    padding: 3
+                }
+            },
 
-      defaultNavigationOptions: ({ navigation }) => ({
-        tabBarOnPress: (props) => {
-          console.log('props: ', props);
-          let route = props.navigation.state.routeName
-          console.log('route: ', route);
-          props.navigation.replace(route);
-          // jumpToIndex(scene.index);
-        },
-        tabBarIcon: ({ focused, horizontal, tintColor }) => {
-          const { routeName } = navigation.state;
+            defaultNavigationOptions: ({ navigation }) => ({
+                tabBarOnPress: (props) => {
+                    console.log('props: ', props);
+                    let route = props.navigation.state.routeName;
+                    console.log('route: ', route);
+                    props.navigation.replace(route);
+                    // jumpToIndex(scene.index);
+                },
+                tabBarIcon: ({ focused, horizontal, tintColor }) => {
+                    const { routeName } = navigation.state;
 
-          let icon;
+                    let icon;
 
-          if (routeName === 'Home') {
-            icon = HomeIcon;
-          } else if (routeName === 'Ads') {
-            icon = AdsIcon;
-          } else if (routeName === 'Settings') {
-            icon = ProfileIcon;
-          } else if (routeName === 'Messages') {
-            icon = MessagesIcon;
-          } else if (routeName === 'Category') {
-            icon = CategoryIcon;
-          }
+                    if (routeName === 'Home') {
+                        icon = HomeIcon;
+                    } else if (routeName === 'Ads') {
+                        icon = AdsIcon;
+                    } else if (routeName === 'Settings') {
+                        icon = ProfileIcon;
+                    } else if (routeName === 'Messages') {
+                        icon = MessagesIcon;
+                    } else if (routeName === 'Category') {
+                        icon = CategoryIcon;
+                    }
 
-          return <Image source={icon} style={{ height: 20, width: 20 }} />;
-        },
-      }),
+                    return <Image source={icon} style={{ height: 20, width: 20 }} />;
+                }
+            }),
 
-      initialRouteName: 'Home'
-      // headerMode: 'none'
-    }
-  )
+            initialRouteName: 'Home'
+            // headerMode: 'none'
+        }
+    )
 );
 
 export default TabNavigator;

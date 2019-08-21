@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import Home3 from '../Home/Home3';
 
 export default class Ads extends Component {
-  render() {
-    return (
-      <View>
-        <Text> Ads </Text>
-      </View>
-    );
-  }
+    render() {
+        return <Home3 />;
+    }
 }
