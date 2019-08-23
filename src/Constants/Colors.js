@@ -1,4 +1,4 @@
-export const primaryColor = '#512DA8';
+export const primaryColor = '#2196F3';
 export const grayColor = '#6d7683';
 export const facebookColor = '#3A5999';
 export const googleColor = '#4184F3';

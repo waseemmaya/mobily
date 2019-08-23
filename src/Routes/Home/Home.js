@@ -1,229 +1,172 @@
 import React, { Component } from 'react';
-import { Icon } from 'native-base';
-import { Block, Input, Card, Button, Text } from 'galio-framework';
-import { StatusBar, TouchableOpacity, Animated, ToastAndroid } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Block } from 'galio-framework';
+import { StatusBar, ToastAndroid, Text, FlatList, View } from 'react-native';
 import { DotIndicator } from 'react-native-indicators';
-import axios from 'axios';
-import { width } from '../../Constants/Dimensions';
-import { primaryColor, grayColor } from '../../Constants/Colors';
-import Home2 from './Home2';
-import Home3 from './Home3';
-
-export default class Home extends Component {
+import { Screen } from '@shoutem/ui';
+import { primaryColor } from '../../Constants/Colors';
+import { connect } from 'react-redux';
+import { addTask } from '../../Redux/actions/actions';
+import { getLatestAds } from '../../Helpers/getAds';
+import { getTotalAds } from '../../Helpers/getAds';
+import { fetchMoreAds } from '../../Helpers/getAds';
+import { searchAds } from '../../Helpers/getAds';
+import RenderSearch from './RenderSearch';
+// import Grid from 'react-native-infinite-scroll-grid';
+import RenderAd from './RenderAd';
+import { OptimizedFlatList } from 'react-native-optimized-flatlist';
+class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSearchingEnabled: false,
             lastId: '',
             searchQuery: '',
             isFetching: false,
             adsArr: [],
-            isInit: false,
             searchArr: [],
-            scrollY: new Animated.Value(0)
+            totalAds: 0,
+            searchEnabled: false
         };
     }
 
+    renderSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: '86%',
+                    backgroundColor: '#CED0CE',
+                    marginLeft: '14%'
+                }}
+            />
+        );
+    };
+
+    shouldComponentUpdate() {
+        return true;
+    }
+
     render() {
-        const { isFetching, adsArr, searchArr } = this.state;
-
-        let arr = searchArr.length > 0 ? searchArr : adsArr;
-
+        const { isFetching, totalAds } = this.state;
+        let { tasks } = this.props;
+        if (!tasks) {
+            return <DotIndicator color={primaryColor} size={10} />;
+        }
         return (
             <Block style={{ flex: 1 }}>
                 <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
-                <Block>{this.renderSearchBar(arr.length)}</Block>
-                {arr.length < 1 ? (
-                    <DotIndicator color={primaryColor} size={10} />
-                ) : (
-                    <Home2
-                        initialSearch={this.initialSearch}
-                        isFetching={isFetching}
-                        fetchMore={this.fetchMore}
-                        adsArr={arr}
-                        props={this.props}
+                <RenderSearch
+                    isFetching={isFetching}
+                    adsLength={tasks.length}
+                    search={this.search}
+                    totalAds={totalAds}
+                />
+                <Screen style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+                    <OptimizedFlatList
+                        maxToRenderPerBatch={30}
+                        data={tasks}
+                        initialNumToRender={30}
+                        renderItem={(ad) => (
+                            <RenderAd ad={ad} />
+                            // <Text style={{ fontSize: 13, color: 'black' }} numberOfLines={1}>
+                            //     {ad.index} - {ad.item.adTitle}
+                            // </Text>
+                        )}
+                        keyExtractor={(item) => item._id}
+                        onEndReached={this.fetchMore}
+                        onEndReachedThreshold={150}
                     />
-                )}
-                {/* {adsArr.length < 1 ? (
-                    <DotIndicator color={primaryColor} size={10} />
-                ) : (
-                    <Home3 isFetching={isFetching} fetchMore={this.fetchMore} adsArr={adsArr} props={this.props} />
-                )} */}
-                {/* 
-                <Block center>
-                    <Button
-                        style={{
-                            width: 100,
-                            marginBottom: 15,
-                            backgroundColor: primaryColor
-                        }}
-                        onPress={this.fetchMore}>
-                        Fetch More
-                    </Button>
-                </Block> */}
-                {/* {adsArr.length < 1 ? (
-                    <DotIndicator color={primaryColor} size={10} />
-                ) : (
-                    <ScrollView>
-                        <Block style={{ margin: 20 }}>
-                            {this.state.adsArr.map((v, i) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={i}
-                                        activeOpacity={0.6}
-                                        onPress={() => this.props.navigation.navigate('ViewAd', { adObj: v })}>
-                                        <Block>
-                                            <Card
-                                                card
-                                                shadow
-                                                borderless
-                                                avatar={v.adsImages[0].thumb}
-                                                authorTitle='Offset'
-                                                authorSubTitle='420 minutes ago'
-                                                neutral
-                                                location={v.location}
-                                                fullBackgroundImage
-                                                caption={`${v.description.length > 40
-                                                    ? v.description.substring(0, 40 - 3) + '...'
-                                                    : v.description}`}
-                                                image={v.adsImages[0].small}
-                                                title={`${v.adNumber}-${v.adTitle}`}
-                                            />
-                                            <Block style={{ marginTop: 20 }} />
-                                        </Block>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </Block>
-                        <Block center>
-                            <Button
-                                style={{
-                                    width: 100,
-                                    marginBottom: 15,
-                                    backgroundColor: primaryColor
-                                }}
-                                onPress={this.fetchMore}>
-                                Fetch More
-                            </Button>
-                        </Block>
-                    </ScrollView>
-                )} */}
+                    {/* <FlatList
+                        data={tasks}
+                        keyExtractor={(item) => item._id.toString()}
+                        renderItem={(ad) => <RenderAd ad={ad} />}
+                        onEndReached={() => this.fetchMore()}
+                        loadingMore={this.state.isFetching}
+                    /> */}
+                    {/* <Grid
+                        numColumns={1}
+                        data={tasks}
+                        keyExtractor={(item) => item._id.toString()}
+                        renderItem={(ad) => <RenderAd ad={ad} />}
+                        // onRefresh={() => this.props.initialSearch()}
+                        // refreshing={this.props.isFetching}
+                        onEndReached={() => this.fetchMore()}
+                        loadingMore={this.state.isFetching}
+                        marginExternal={6}
+                        marginInternal={6}
+                    /> */}
+                </Screen>
             </Block>
         );
     }
 
-    componentDidMount = () => {
-        this.initialSearch();
-    };
-
-    initialSearch = async () => {
+    componentDidMount = async () => {
+        console.log('initial fetch');
+        // total ads length
+        let totalAds = await getTotalAds();
+        // lastest ads || initail search ads
+        let latestAds = await getLatestAds();
+        let { ads, lastId } = latestAds;
+        this.props.addTask(ads);
         this.setState({
-            adsArr: [],
-            isFetching: true
-        });
-
-        let adsAPI = 'https://mobily-pk.herokuapp.com/ads';
-        let data = await axios.get(adsAPI);
-        let { ads, lastId } = data.data;
-        this.setState({
-            adsArr: ads,
-            lastId: lastId,
-            isFetching: false
+            totalAds,
+            lastId: lastId
         });
     };
 
     fetchMore = async () => {
-        // ToastAndroid.show('A pikachu appeared nearby !', ToastAndroid.SHORT);
+        console.log('fetchMore');
+
         this.setState({
             isFetching: true
         });
-        var { adsArr } = this.state;
-        let moreAdsApi = `https://mobily-pk.herokuapp.com/ads/more/${this.state.lastId}`;
-
-        let data = await axios.get(moreAdsApi);
-        let { ads, lastId } = data.data;
-        let newArr = adsArr.concat(ads);
+        let moreAds = await fetchMoreAds(this.state.lastId);
+        let { ads, lastId } = moreAds;
         this.setState({
-            adsArr: newArr,
             lastId: lastId,
             isFetching: false
         });
+        this.props.addTask(ads);
     };
 
-    search = async () => {
-        const { searchQuery } = this.state;
+    search = async (searchQuery) => {
         if (!searchQuery) {
+            ToastAndroid.show('Please enter something!', ToastAndroid.SHORT);
             return;
         }
         this.setState({
-            searchArr: []
+            searchArr: [],
+            searchEnabled: true
         });
 
-        let searchApi = `https://mobily-pk.herokuapp.com/ads/search/${searchQuery}`;
+        let searchedAds = await searchAds(searchQuery);
 
-        try {
-            let data = await axios.get(searchApi);
-            console.log('data: ', data);
-            let { ads, lastId } = data.data;
+        let { ads, lastId } = searchedAds;
+        if (ads) {
+            ToastAndroid.show('No result found!', ToastAndroid.SHORT);
             this.setState({
-                searchArr: ads,
-                lastId: lastId
+                searchEnabled: false
             });
-        } catch (error) {
-            console.log('error: ', error);
+            return;
         }
-    };
 
-    componentWillUnmount = () => {
         this.setState({
-            isSearchingEnabled: false
+            searchArr: ads,
+            lastId: lastId,
+            searchEnabled: false
         });
-    };
-
-    renderSearchBar = (adsLength) => {
-        const { searchQuery } = this.state;
-        return (
-            <Block style={{ height: 90, backgroundColor: primaryColor }}>
-                <Input
-                    value={searchQuery}
-                    onChangeText={(searchQuery) => this.setState({ searchQuery })}
-                    placeholder='Search...'
-                    borderless
-                    // onFocus={() => this.setState({ isSearchingEnabled: true })}
-                    placeholderTextColor={grayColor}
-                    onSubmitEditing={this.search}
-                    style={{
-                        borderRadius: 1,
-                        height: 38,
-                        width: width - 32,
-                        marginHorizontal: 14,
-                        marginTop: 10
-                    }}
-                    right
-                    iconContent={
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (searchQuery.length > 0) {
-                                    this.setState({ searchQuery: '', searchArr: [] });
-                                    // this.initialSearch();
-                                }
-                            }}
-                            styleName='flexible'>
-                            <Icon
-                                style={{ fontSize: 21, color: grayColor }}
-                                name={searchQuery.length > 0 ? 'ios-close' : 'ios-search'}
-                                type='Ionicons'
-                            />
-                        </TouchableOpacity>
-                    }
-                />
-                <Block center>
-                    <Text muted style={{ fontSize: 11 }}>
-                        Total Length : {adsLength}
-                    </Text>
-                </Block>
-            </Block>
-        );
     };
 }
+
+const mapStateToProps = (state) => {
+    return {
+        tasks: state.reducers.tasks
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addTask: (task) => dispatch(addTask(task))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

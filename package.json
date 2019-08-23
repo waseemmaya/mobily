@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
+    "android-shake": "adb shell input keyevent 82",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -23,10 +24,16 @@
     "react-native-indicators": "^0.13.0",
     "react-native-infinite-scroll-grid": "^0.1.0",
     "react-native-material-textfield": "^0.12.0",
+    "react-native-optimized-flatlist": "^1.0.4",
     "react-native-paper": "^2.16.0",
     "react-native-push-notification": "^3.1.8",
     "react-native-vector-icons": "^6.6.0",
-    "react-navigation": "^3.11.1"
+    "react-navigation": "^3.11.1",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
