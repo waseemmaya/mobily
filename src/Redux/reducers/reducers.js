@@ -8,6 +8,7 @@ const reducer = (state = initial_state, action) => {
         case 'ADD_TASK': {
             const { tasks } = state;
             let newArr = tasks.concat(action.task);
+
             return { ...state, tasks: newArr };
         }
         case 'UPDATE_TASK': {
@@ -20,15 +21,8 @@ const reducer = (state = initial_state, action) => {
         }
 
         case 'REMOVE_TASK': {
-            var { tasks } = state;
-            let i = action.index;
             let newArr = [];
-            tasks.map((v, j) => {
-                if (i !== j) {
-                    newArr.push(v);
-                }
-                return newArr;
-            });
+
             return { ...state, tasks: newArr };
         }
         default: {

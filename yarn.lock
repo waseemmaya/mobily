@@ -5924,6 +5924,11 @@ react-native-photo-view@shoutem/react-native-photo-view#cfc3f50a2a3a83a3848a570a
   dependencies:
     prop-types "^15.5.10"
 
+react-native-progressive-image@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-progressive-image/-/react-native-progressive-image-1.0.4.tgz#6403d55969fc5c42662d8eeebb555b016c7adece"
+  integrity sha1-ZAPVWWn8XEJmLY7uu1VbAWx63s4=
+
 react-native-push-notification@^3.1.8:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-3.1.8.tgz#18c0dbac93333676afb0f7c6c33f031b0ffb9774"
