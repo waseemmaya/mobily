@@ -45,13 +45,13 @@ export default class RenderSearch extends Component {
                         <TouchableOpacity
                             onPress={() => {
                                 if (searchQuery.length > 0) {
-                                    this.setState({ searchQuery: '', searchArr: [] });
-                                    // this.initialSearch();
+                                    this.setState({ searchQuery: '' });
+                                    this.props.cancelSearch();
                                 }
                             }}
                             styleName='flexible'>
                             <Icon
-                                style={{ fontSize: 21, color: grayColor }}
+                                style={{ fontSize: searchQuery.length > 0 ? 26 : 21, color: grayColor }}
                                 name={searchQuery.length > 0 ? 'ios-close' : 'ios-search'}
                                 type='Ionicons'
                             />

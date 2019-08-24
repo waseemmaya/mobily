@@ -7,14 +7,20 @@ import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview
 import { primaryColor } from '../../Constants/Colors';
 import { connect } from 'react-redux';
 import { addTask, removeTask } from '../../Redux/actions/actions';
-import { getLatestAds } from '../../Helpers/getAds';
-import { getTotalAds } from '../../Helpers/getAds';
-import { fetchMoreAds } from '../../Helpers/getAds';
-import { searchAds } from '../../Helpers/getAds';
+import { searchMoreAds, searchAds, getLatestAds, getTotalAds, fetchMoreAds } from '../../Helpers/getAds';
 import RenderSearch from './RenderSearch';
 import RenderAd from './RenderAd';
+import NetworkError from '../../Error/NetworkError';
+import reactNativeInfiniteScrollGrid from 'react-native-infinite-scroll-grid';
+import RecylerView from './RecylerView';
+
 // import Home3 from './Home3';
 const { width } = Dimensions.get('window');
+
+const ViewTypes = {
+    HALF_LEFT: 1,
+    HALF_RIGHT: 2
+};
 
 class Home extends Component {
     constructor(props) {
@@ -24,77 +30,124 @@ class Home extends Component {
             searchQuery: '',
             isFetching: false,
             adsArr: [],
-            searchArr: [],
             totalAds: 0,
-            searchEnabled: false,
-            refreshing: false
+            refreshing: false,
+            searchLastId: '',
+            searchQuery: '',
+            noResult: false,
+            noResultmessage: ''
         };
 
         this._layoutProvider = new LayoutProvider(
-            () => {
-                return 0;
+            (index) => {
+                if (index % 2 === 0) {
+                    return ViewTypes.HALF_LEFT;
+                } else {
+                    return ViewTypes.HALF_RIGHT;
+                }
             },
             (type, dim) => {
-                dim.width = width;
-                dim.height = 120;
+                switch (type) {
+                    case ViewTypes.HALF_LEFT:
+                        dim.width = width / 2 - 0.0001;
+                        dim.height = 160;
+                        break;
+                    case ViewTypes.HALF_RIGHT:
+                        dim.width = width / 2;
+                        dim.height = 160;
+                        break;
+                    default:
+                        dim.width = 0;
+                        dim.height = 0;
+                }
             }
         );
     }
 
     render() {
-        const { isFetching, totalAds, refreshing, searchArr, searchEnabled } = this.state;
+        const { isFetching, totalAds, refreshing, searchLastId, noResult, noResultmessage } = this.state;
         let { tasks } = this.props;
+
+        let arr = tasks;
 
         let dataProvider = new DataProvider((r1, r2) => {
             return r1 !== r2;
         });
-
-        let arr = searchArr.length > 0 ? searchArr : tasks;
-
         let stateDataProvider = dataProvider.cloneWithRows(arr);
 
         return (
             <Block style={{ flex: 1 }}>
                 <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
-                <RenderSearch isFetching={isFetching} adsLength={arr.length} search={this.search} totalAds={totalAds} />
-
-                <Screen style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-                    {searchEnabled && <WaveIndicator color={primaryColor} size={40} />}
-                    {arr.length > 0 ? (
-                        <RecyclerListView
-                            onEndReached={this.fetchMore}
-                            layoutProvider={this._layoutProvider}
-                            dataProvider={stateDataProvider}
-                            rowRenderer={(type, data) => <RenderAd ad={data} />}
-                            scrollViewProps={{
-                                refreshControl: (
-                                    <RefreshControl
-                                        refreshing={refreshing}
-                                        onRefresh={async () => {
-                                            this.setState({ refreshing: true });
-                                            // analytics.logEvent('Event_Stagg_pull_to_refresh');
-                                            await this.latestFetch(100);
-                                            console.log('refreshing false');
-                                            this.setState({ refreshing: false });
-                                        }}
-                                    />
-                                )
-                            }}
-                        />
-                    ) : (
-                        // <Home3 fetchMore={this.fetchMore} tasks={tasks} />
-                        <WaveIndicator color={primaryColor} size={40} />
-                    )}
-                </Screen>
+                <RenderSearch
+                    cancelSearch={this.cancelSearch}
+                    isFetching={isFetching}
+                    adsLength={arr.length}
+                    search={this.search}
+                    totalAds={totalAds}
+                />
+                {noResult ? (
+                    <NetworkError message={noResultmessage} latestFetch={this.latestFetch} />
+                ) : (
+                    <Screen style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+                        {arr.length > 0 && !noResult ? (
+                            <RecyclerListView
+                                onEndReached={searchLastId ? this.searchMore : this.fetchMore}
+                                layoutProvider={this._layoutProvider}
+                                dataProvider={stateDataProvider}
+                                rowRenderer={this._rowRenderer}
+                                scrollViewProps={{
+                                    refreshControl: (
+                                        <RefreshControl
+                                            refreshing={refreshing}
+                                            onRefresh={async () => {
+                                                this.setState({ refreshing: true, searchQuery: '' });
+                                                // analytics.logEvent('Event_Stagg_pull_to_refresh');
+                                                await this.latestFetch(100);
+                                                console.log('refreshing false');
+                                                this.setState({ refreshing: false });
+                                            }}
+                                        />
+                                    )
+                                }}
+                            />
+                        ) : (
+                            <WaveIndicator color={primaryColor} size={40} />
+                        )}
+                    </Screen>
+                )}
             </Block>
         );
     }
 
-    componentDidMount = () => {
-        this.latestFetch();
-        this.getTotalAds();
+    _rowRenderer = (type, data) => {
+        switch (type) {
+            case ViewTypes.HALF_LEFT:
+                return (
+                    <View style={styles.containerGridLeft}>
+                        <RenderAd ad={data} />
+                    </View>
+                );
+            // );
+            case ViewTypes.HALF_RIGHT:
+                return (
+                    <View style={styles.containerGridRight}>
+                        <RenderAd ad={data} />
+                    </View>
+                );
+            default:
+                return null;
+        }
     };
 
+    cancelSearch = () => {
+        this.setState({
+            searchLastId: '',
+            searchQuery: '',
+            noResult: false
+        });
+
+        this.latestFetch(50);
+    };
     getTotalAds = async () => {
         // total ads length
         let totalAds = await getTotalAds();
@@ -103,19 +156,23 @@ class Home extends Component {
         });
     };
 
+    componentDidMount = () => {
+        this.latestFetch();
+        this.getTotalAds();
+    };
+
     latestFetch = async (n) => {
         this.props.removeTask();
 
         let count = n ? n : 66;
-        console.log('count: ', count);
 
         // lastest ads || initail search ads
         let latestAds = await getLatestAds(count);
-        console.log('latestAds: ', latestAds);
         let { ads, lastId } = latestAds;
         this.props.addTask(ads);
         this.setState({
-            lastId: lastId
+            lastId: lastId,
+            noResult: false
         });
     };
 
@@ -133,33 +190,60 @@ class Home extends Component {
         });
     };
 
+    searchMore = async () => {
+        console.log('searching more ------->');
+        this.setState({
+            isFetching: true
+        });
+        const { searchLastId, searchQuery } = this.state;
+        let moreAds = await searchMoreAds(searchQuery, searchLastId);
+        if (!ads) {
+            ToastAndroid.show('No more ads found!', ToastAndroid.SHORT);
+            this.setState({
+                isFetching: false
+            });
+            return;
+        }
+        let { ads, lastId } = moreAds;
+        this.props.addTask(ads);
+        this.setState({
+            lastId: lastId,
+            isFetching: false
+        });
+    };
+
     search = async (searchQuery) => {
+        console.log('initial search ------->');
         if (!searchQuery) {
             ToastAndroid.show('Please enter something!', ToastAndroid.SHORT);
             return;
         }
+
         this.setState({
-            searchArr: [],
-            searchEnabled: true
+            searchQuery: searchQuery,
+            isFetching: true
         });
-        this.props.removeTask();
 
         let searchedAds = await searchAds(searchQuery);
+        let { ads, lastId, status } = searchedAds;
+        console.log('status: ', status);
 
-        let { ads, lastId } = searchedAds;
-        if (ads.length === 0) {
+        if (status !== 200) {
             ToastAndroid.show('No result found!', ToastAndroid.SHORT);
             this.setState({
-                searchEnabled: false
+                isFetching: false,
+                noResult: true,
+                noResultmessage: `No ad found containing "${searchQuery}"`
             });
-            this.latestFetch();
+            // this.latestFetch();
             return;
         }
+        this.props.removeTask();
 
         this.props.addTask(ads);
         this.setState({
-            lastId: lastId,
-            searchEnabled: false
+            searchLastId: lastId,
+            isFetching: false
         });
     };
 }
@@ -178,6 +262,21 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+const styles = {
+    containerGridLeft: {
+        marginTop: 5,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flex: 1
+    },
+    containerGridRight: {
+        marginTop: 5,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flex: 1
+    }
+};
 
 // <SkypeIndicator color={primaryColor} size={30} />
 // <Indicator color={primaryColor} size={30} />

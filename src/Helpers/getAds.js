@@ -1,4 +1,6 @@
 import axios from 'axios';
+// const API = 'http://10.0.2.2:3001';
+// let url = `https://mobily-pk.herokuapp.com/ads?id=${_id}`;
 
 export const getLatestAds = async (no) => {
     let count = no ? no : 30;
@@ -12,13 +14,10 @@ export const getLatestAds = async (no) => {
     return res;
 };
 
-// const API = 'http://10.0.2.2:3001';
-
 export const fetchMoreAds = async (oldLastId) => {
     let moreAdsApi = `https://mobily-pk.herokuapp.com/ads?lastId=${oldLastId}`;
 
     let data = await axios.get(moreAdsApi);
-    console.log('data: ', data);
     let { ads, lastId } = data.data;
     let res = {
         ads,
@@ -36,39 +35,39 @@ export const getTotalAds = async () => {
 };
 
 export const searchAds = async (searchQuery) => {
-    console.log('searchQuery: ', searchQuery);
+    console.log('in');
     // let searchApi = `https://mobily-pk.herokuapp.com/ads/search/${searchQuery}`;
     let searchApi = `https://mobily-pk.herokuapp.com/ads/search?query=${searchQuery}`;
+    let resObj = {};
+    try {
+        let res = await axios.get(searchApi);
+        const { status, data } = res;
+        resObj.status = status;
+        (resObj.ads = data.ads), (resObj.lastId = data.lastId);
+    } catch (error) {
+        resObj.status = 404;
+        console.log('error: ---->', error);
+    }
 
+    console.log('resObj: ', resObj);
+    return resObj;
+};
+
+export const searchMoreAds = async (searchQuery, oldLastId) => {
+    console.log('searchQuery: ', searchQuery);
+    console.log('in');
+    let searchApi = `https://mobily-pk.herokuapp.com/ads/search?query=${searchQuery}&lastId=${oldLastId}`;
     try {
         let data = await axios.get(searchApi);
-        // console.log('data: ', data);
-        // if (!data.ads) {
-        //     let err = {
-        //         message: data.data.message
-        //     };
-        //     return err;
-        // }
         let { ads, lastId } = data.data;
         let res = {
             ads,
             lastId
         };
         return res;
-    } catch (error) {
-        console.log('error: ', error);
+    } catch (err) {
+        console.log('err: ----> ', err);
+        console.log('err:  --->', err.message);
     }
-};
-
-export const searchMoreAds = async (searchQuery, oldLastId) => {
-    let searchApi = `https://mobily-pk.herokuapp.com/ads/search?query=${searchQuery}&lastId=${oldLastId}`;
-    let data = await axios.get(searchApi);
-    console.log('searchMore: ', data);
-    let { ads, lastId } = data.data;
-    let res = {
-        ads,
-        lastId
-    };
-    return res;
     // this.props.addTask(ads);
 };
