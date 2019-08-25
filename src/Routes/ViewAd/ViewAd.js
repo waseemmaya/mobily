@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import { ScrollView, StatusBar } from 'react-native';
-import { View, Subtitle, Caption, Row, InlineGallery, Divider } from '@shoutem/ui';
-import { Block } from 'galio-framework';
-import moment from 'moment';
+import { Block, Text } from 'galio-framework';
 import ImagesViewer from './ImagesViewer';
-import { primaryColor } from '../../Constants/Colors';
 
 export default class ViewAd extends Component {
     constructor(props) {
@@ -67,46 +63,51 @@ export default class ViewAd extends Component {
         }
 
         return (
-            <Block style={{ flex: 1 }}>
-                {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
-                {/* <StatusBar backgroundColor={primaryColor} hidden barStyle='light-content' /> */}
-
-                <ScrollView>
-                    <InlineGallery onPress={this.toggleModal} styleName='large-banner' data={arr} />
-                    <Block center>
-                        <Caption>Total {ad.adsImages.length} Images</Caption>
-                    </Block>
-
-                    <Divider styleName='line' />
-                    <Row>
-                        <View styleName='vertical stretch space-between'>
-                            <Block center>
-                                <Subtitle style={{ fontSize: 22 }}>{ad.adTitle}</Subtitle>
-                            </Block>
-                            <Divider styleName='line' />
-                            <Caption>Ad Number : {ad.adNumber}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Price : {ad.price}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Posted : {moment(ad.postedAt).fromNow()}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Location : {ad.location}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Views : {ad.views}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Posted By : {ad.postedByName}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Desciption :</Caption>
-                            <Divider styleName='line' />
-                            <Caption>{ad.description}</Caption>
-                        </View>
-                    </Row>
-                    <Divider styleName='line' />
-                    <Block center>
-                        <Caption>{`---  Mobily  ---`}</Caption>
-                    </Block>
-                </ScrollView>
+            <Block>
+                <Text>
+                    {ad.adNumber} - {ad.adTitle}
+                </Text>
             </Block>
         );
+
+        // return (
+        //     <Block style={{ flex: 1 }}>
+        //         <ScrollView>
+        //             <InlineGallery onPress={this.toggleModal} styleName='large-banner' data={arr} />
+        //             <Block center>
+        //                 <Caption>Total {ad.adsImages.length} Images</Caption>
+        //             </Block>
+
+        //             <Divider styleName='line' />
+        //             <Row>
+        //                 <View styleName='vertical stretch space-between'>
+        //                     <Block center>
+        //                         <Subtitle style={{ fontSize: 22 }}>{ad.adTitle}</Subtitle>
+        //                     </Block>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Ad Number : {ad.adNumber}</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Price : {ad.price}</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Posted : {moment(ad.postedAt).fromNow()}</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Location : {ad.location}</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Views : {ad.views}</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Posted By : {ad.postedByName}</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>Desciption :</Caption>
+        //                     <Divider styleName='line' />
+        //                     <Caption>{ad.description}</Caption>
+        //                 </View>
+        //             </Row>
+        //             <Divider styleName='line' />
+        //             <Block center>
+        //                 <Caption>{`---  Mobily  ---`}</Caption>
+        //             </Block>
+        //         </ScrollView>
+        //     </Block>
+        // );
     }
 }

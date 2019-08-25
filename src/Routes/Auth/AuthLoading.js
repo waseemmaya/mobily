@@ -1,26 +1,15 @@
 import React from 'react';
 import { StatusBar, View } from 'react-native';
-import { DotIndicator } from 'react-native-indicators';
-import firebase from 'react-native-firebase';
+import { Spinner } from 'native-base';
+// import firebase from 'react-native-firebase';
 import { isLoggedin } from '../../Helpers/AuthFunctions';
 import { primaryColor } from '../../Constants/Colors';
 import { requestCameraPermission, requestGalleryPermission } from '../../Helpers/androidPermissions';
+import Loader from '../../Components/Loader/Loader';
 
 export default class AuthLoading extends React.Component {
     render() {
-        return (
-            <View
-                style={{
-                    backgroundColor: primaryColor,
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center'
-                }}>
-                {/* <StatusBar hidden backgroundColor={primaryColor} barStyle="light-content" /> */}
-                <StatusBar hidden />
-                <DotIndicator color='white' size={10} />
-            </View>
-        );
+        return <Loader color={primaryColor} />;
     }
 
     componentDidMount = async () => {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Icon } from 'native-base';
-import { Block, Input, Card, Button, Text } from 'galio-framework';
-import { StatusBar, TouchableOpacity, Animated, ToastAndroid } from 'react-native';
-import { primaryColor, grayColor, facebookColor, googleColor } from '../../Constants/Colors';
+import { Block, Input, Text } from 'galio-framework';
+import { TouchableOpacity } from 'react-native';
+import { primaryColor, grayColor } from '../../Constants/Colors';
 import { width } from '../../Constants/Dimensions';
 
 export default class RenderSearch extends Component {
@@ -51,7 +51,7 @@ export default class RenderSearch extends Component {
                             }}
                             styleName='flexible'>
                             <Icon
-                                style={{ fontSize: searchQuery.length > 0 ? 26 : 21, color: grayColor }}
+                                style={{ fontSize: searchQuery.length > 0 ? 28 : 21, color: grayColor }}
                                 name={searchQuery.length > 0 ? 'ios-close' : 'ios-search'}
                                 type='Ionicons'
                             />

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Block } from 'galio-framework';
-import { StatusBar, ToastAndroid, Text, Dimensions, View, ScrollView, RefreshControl } from 'react-native';
-import { Screen } from '@shoutem/ui';
-import { DotIndicator, WaveIndicator } from 'react-native-indicators';
+import { StatusBar, ToastAndroid, Text, Dimensions, View, RefreshControl } from 'react-native';
+import { Spinner } from 'native-base';
+
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { primaryColor } from '../../Constants/Colors';
 import { connect } from 'react-redux';
@@ -11,8 +11,8 @@ import { searchMoreAds, searchAds, getLatestAds, getTotalAds, fetchMoreAds } fro
 import RenderSearch from './RenderSearch';
 import RenderAd from './RenderAd';
 import NetworkError from '../../Error/NetworkError';
-import reactNativeInfiniteScrollGrid from 'react-native-infinite-scroll-grid';
 import RecylerView from './RecylerView';
+import Loader from '../../Components/Loader/Loader';
 
 // import Home3 from './Home3';
 const { width } = Dimensions.get('window');
@@ -88,7 +88,7 @@ class Home extends Component {
                 {noResult ? (
                     <NetworkError message={noResultmessage} latestFetch={this.latestFetch} />
                 ) : (
-                    <Screen style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+                    <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
                         {arr.length > 0 && !noResult ? (
                             <RecyclerListView
                                 onEndReached={searchLastId ? this.searchMore : this.fetchMore}
@@ -111,9 +111,9 @@ class Home extends Component {
                                 }}
                             />
                         ) : (
-                            <WaveIndicator color={primaryColor} size={40} />
+                            <Loader color={primaryColor} />
                         )}
-                    </Screen>
+                    </Block>
                 )}
             </Block>
         );
