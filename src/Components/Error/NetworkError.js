@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Block, Text } from 'galio-framework';
 import { Icon } from 'native-base';
-import { grayColor } from '../../config/Constants/Colors';
+import { grayColor } from '../../Constants/Colors';
 
 export default class NetworkError extends Component {
     render() {
