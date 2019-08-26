@@ -22,10 +22,11 @@ export default class RenderSearch extends Component {
         }
     };
     renderSearchBar = () => {
-        const { isFetching, totalAds, adsLength } = this.props;
+        const { isFetching, totalAds, adsLength, totalQueryAds } = this.props;
+        console.log('totalQueryAds: ', totalQueryAds);
         const { searchQuery } = this.state;
         return (
-            <Block style={{ height: 95, backgroundColor: primaryColor }}>
+            <Block style={{ height: 110, backgroundColor: primaryColor }}>
                 <Input
                     value={searchQuery}
                     onChangeText={(searchQuery) => this.setState({ searchQuery })}
@@ -60,8 +61,14 @@ export default class RenderSearch extends Component {
                 />
                 <Block center>
                     <Text style={{ fontSize: 11, color: 'white' }}>
-                        Total : {totalAds} - Redux : {adsLength}
+                        DB : {totalAds} - State : {adsLength}
                     </Text>
+
+                    <Text style={{ fontSize: 11, color: 'white' }}>
+                        Total {totalQueryAds && totalQueryAds} ads found for{' '}
+                        {this.props.searchQuery && this.props.searchQuery}
+                    </Text>
+
                     <Text style={{ fontSize: 11, color: 'white' }}>{isFetching && 'Fetching more.....'}</Text>
                 </Block>
             </Block>
