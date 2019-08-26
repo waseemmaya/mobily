@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
-import { Block } from 'galio-framework';
-import { StatusBar, ToastAndroid, Text, Dimensions, View, RefreshControl } from 'react-native';
-import { Toast } from 'native-base';
-
+import { StatusBar, ToastAndroid, Dimensions, View, RefreshControl } from 'react-native';
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
-import { primaryColor } from '../../config/Constants/Colors';
-import { connect } from 'react-redux';
-import { addTask, removeTask } from '../../redux/actions/actions';
+import { Block } from 'galio-framework';
+import { Toast } from 'native-base';
 import { searchMoreAds, searchAds, getLatestAds, getTotalAds, fetchMoreAds } from '../../config/Helpers/getAds';
 import RenderSearch from './RenderSearch';
 import RenderAd from './RenderAd';
 import NetworkError from '../../components/Error/NetworkError';
-import RecylerView from './RecylerView';
 import Loader from '../../components/Loader/Loader';
+import { primaryColor } from '../../config/Constants/Colors';
 
-// import Home3 from './Home3';
 const { width } = Dimensions.get('window');
 
 const ViewTypes = {
@@ -26,16 +21,16 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lastId: '',
-            searchQuery: '',
-            isFetching: false,
             adsArr: [],
             totalAds: 0,
+            isFetching: false,
             refreshing: false,
+            noResult: false,
+            noResultmessage: '',
+            lastId: '',
             searchLastId: '',
             searchQuery: '',
-            noResult: false,
-            noResultmessage: ''
+            totalQueryAds: 0
         };
 
         this._layoutProvider = new LayoutProvider(
@@ -65,10 +60,19 @@ class Home extends Component {
     }
 
     render() {
-        const { isFetching, totalAds, refreshing, searchLastId, noResult, noResultmessage } = this.state;
-        let { tasks } = this.props;
+        const {
+            isFetching,
+            totalAds,
+            refreshing,
+            searchLastId,
+            noResult,
+            noResultmessage,
+            adsArr,
+            totalQueryAds,
+            searchQuery
+        } = this.state;
 
-        let arr = tasks;
+        let arr = adsArr;
 
         let dataProvider = new DataProvider((r1, r2) => {
             return r1 !== r2;
@@ -79,6 +83,8 @@ class Home extends Component {
             <Block style={{ flex: 1 }}>
                 <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
                 <RenderSearch
+                    searchQuery={searchQuery}
+                    totalQueryAds={totalQueryAds}
                     cancelSearch={this.cancelSearch}
                     isFetching={isFetching}
                     adsLength={arr.length}
@@ -101,7 +107,6 @@ class Home extends Component {
                                             refreshing={refreshing}
                                             onRefresh={async () => {
                                                 this.setState({ refreshing: true, searchQuery: '' });
-                                                // analytics.logEvent('Event_Stagg_pull_to_refresh');
                                                 await this.latestFetch(100);
                                                 console.log('refreshing false');
                                                 this.setState({ refreshing: false });
@@ -141,15 +146,17 @@ class Home extends Component {
 
     cancelSearch = () => {
         this.setState({
+            lastId: '',
             searchLastId: '',
             searchQuery: '',
-            noResult: false
+            noResult: false,
+            totalQueryAds: ''
         });
 
         this.latestFetch(50);
     };
+
     getTotalAds = async () => {
-        // total ads length
         let totalAds = await getTotalAds();
         this.setState({
             totalAds
@@ -162,16 +169,18 @@ class Home extends Component {
     };
 
     latestFetch = async (n) => {
-        this.props.removeTask();
+        this.setState({
+            adsArr: [],
+            lastId: ''
+        });
 
         let count = n ? n : 66;
 
-        // lastest ads || initail search ads
         try {
             let latestAds = await getLatestAds(count);
             let { ads, lastId } = latestAds;
-            this.props.addTask(ads);
             this.setState({
+                adsArr: ads,
                 lastId: lastId,
                 noResult: false
             });
@@ -185,13 +194,16 @@ class Home extends Component {
 
     fetchMore = async () => {
         console.log('fetching More');
+        let { adsArr } = this.state;
         this.setState({
             isFetching: true
         });
         let moreAds = await fetchMoreAds(this.state.lastId);
         let { ads, lastId } = moreAds;
-        this.props.addTask(ads);
+        let newArr = adsArr.concat(ads);
+
         this.setState({
+            adsArr: newArr,
             lastId: lastId,
             isFetching: false
         });
@@ -199,14 +211,18 @@ class Home extends Component {
 
     searchMore = async () => {
         console.log('searching more ------->');
+        let { adsArr } = this.state;
+
         this.setState({
             isFetching: true
         });
         const { searchLastId, searchQuery } = this.state;
         let moreAds = await searchMoreAds(searchQuery, searchLastId);
-        if (!ads) {
+        console.log('moreAds: ', moreAds);
+        let { ads, lastId, status } = moreAds;
+        if (status !== 200) {
             Toast.show({
-                text: 'No more ads found!',
+                text: `No more ${searchQuery} ads found!`,
                 buttonText: 'Okay',
                 duration: 3000,
                 type: 'danger'
@@ -216,10 +232,12 @@ class Home extends Component {
             });
             return;
         }
-        let { ads, lastId } = moreAds;
-        this.props.addTask(ads);
+
+        let newArr = adsArr.concat(ads);
+
         this.setState({
-            lastId: lastId,
+            adsArr: newArr,
+            searchLastId: lastId,
             isFetching: false
         });
     };
@@ -237,7 +255,7 @@ class Home extends Component {
         });
 
         let searchedAds = await searchAds(searchQuery);
-        let { ads, lastId, status } = searchedAds;
+        let { ads, lastId, status, totalQueryAds } = searchedAds;
         console.log('status: ', status);
 
         if (status !== 200) {
@@ -256,30 +274,20 @@ class Home extends Component {
             // this.latestFetch();
             return;
         }
-        this.props.removeTask();
-
-        this.props.addTask(ads);
         this.setState({
+            adsArr: []
+        });
+
+        this.setState({
+            totalQueryAds: totalQueryAds,
+            adsArr: ads,
             searchLastId: lastId,
             isFetching: false
         });
     };
 }
 
-const mapStateToProps = (state) => {
-    return {
-        tasks: state.reducers.tasks
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addTask: (task) => dispatch(addTask(task)),
-        removeTask: (task) => dispatch(removeTask())
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;
 
 const styles = {
     containerGridLeft: {
@@ -295,11 +303,3 @@ const styles = {
         flex: 1
     }
 };
-
-// <SkypeIndicator color={primaryColor} size={30} />
-// <Indicator color={primaryColor} size={30} />
-// <BallIndicator color={primaryColor} size={30} />
-// <BarIndicator color={primaryColor} size={30} />
-// <MaterialIndicator color={primaryColor} size={30} />
-// <PulseIndicator color={primaryColor} size={30} />
-// <UIActivityIndicator color={primaryColor} size={30} />

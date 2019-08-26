@@ -41,7 +41,9 @@ export const searchAds = async (searchQuery) => {
         let res = await axios.get(`${API}ads/search?query=${searchQuery}`);
         const { status, data } = res;
         resObj.status = status;
-        (resObj.ads = data.ads), (resObj.lastId = data.lastId);
+        (resObj.ads = data.ads),
+            (resObj.lastId = data.lastId),
+            (resObj.totalQueryAds = data.totalQueryAds ? data.totalQueryAds : 0);
     } catch (error) {
         resObj.status = 404;
         console.log('error: ---->', error);
@@ -52,21 +54,22 @@ export const searchAds = async (searchQuery) => {
 };
 
 export const searchMoreAds = async (searchQuery, oldLastId) => {
-    console.log('searchQuery: ', searchQuery);
-    console.log('in');
+    console.log('oldLastId: ', oldLastId);
+    let resObj = {};
+
     try {
-        let data = await axios.get(`${API}ads/search?query=${searchQuery}&lastId=${oldLastId}`);
-        let { ads, lastId } = data.data;
-        let res = {
-            ads,
-            lastId
-        };
-        return res;
+        let res = await axios.get(`${API}ads/search?query=${searchQuery}&lastId=${oldLastId}`);
+        console.log('res: ', res);
+        let { status, data } = res;
+        resObj.status = status;
+        (resObj.ads = data.ads), (resObj.lastId = data.lastId);
     } catch (err) {
+        resObj.status = 404;
         console.log('err: ----> ', err);
         console.log('err:  --->', err.message);
     }
     // this.props.addTask(ads);
+    return resObj;
 };
 
 export const viewIncrement = async (id) => {

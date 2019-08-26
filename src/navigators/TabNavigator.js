@@ -109,7 +109,7 @@ const TabNavigator = createAppContainer(
             tabBarPosition: 'bottom',
             swipeEnabled: true,
             tabBarOptions: {
-                activeTintColor: '#8898AA',
+                activeTintColor: 'white',
                 activeBackgroundColor: primaryColor,
                 inactiveTintColor: '#666',
                 tabStyle: {
