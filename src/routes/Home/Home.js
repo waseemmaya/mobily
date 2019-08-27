@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { StatusBar, ToastAndroid, Dimensions, View, RefreshControl } from 'react-native';
+import { StatusBar, View, RefreshControl } from 'react-native';
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { Block } from 'galio-framework';
-import { Toast } from 'native-base';
-import { searchMoreAds, searchAds, getLatestAds, getTotalAds, fetchMoreAds } from '../../config/Helpers/getAds';
-import RenderSearch from './RenderSearch';
 import RenderAd from './RenderAd';
 import NetworkError from '../../components/Error/NetworkError';
 import Loader from '../../components/Loader/Loader';
 import { primaryColor } from '../../config/Constants/Colors';
-
-const { width } = Dimensions.get('window');
+import { withAds } from '../../contexts/AdContext';
+import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
+import { width } from '../../config/Constants/Dimensions';
 
 const ViewTypes = {
     HALF_LEFT: 1,
@@ -20,18 +18,6 @@ const ViewTypes = {
 class Home extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            adsArr: [],
-            totalAds: 0,
-            isFetching: false,
-            refreshing: false,
-            noResult: false,
-            noResultmessage: '',
-            lastId: '',
-            searchLastId: '',
-            searchQuery: '',
-            totalQueryAds: 0
-        };
 
         this._layoutProvider = new LayoutProvider(
             (index) => {
@@ -60,58 +46,34 @@ class Home extends Component {
     }
 
     render() {
-        const {
-            isFetching,
-            totalAds,
-            refreshing,
-            searchLastId,
-            noResult,
-            noResultmessage,
-            adsArr,
-            totalQueryAds,
-            searchQuery
-        } = this.state;
-
-        let arr = adsArr;
+        const { adsArr, refreshing, latestFetch, noResultMessage, noResult, cancelSearch } = this.props.adState;
 
         let dataProvider = new DataProvider((r1, r2) => {
             return r1 !== r2;
         });
-        let stateDataProvider = dataProvider.cloneWithRows(arr);
+        let stateDataProvider = dataProvider.cloneWithRows(adsArr);
 
         return (
             <Block style={{ flex: 1 }}>
                 <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
-                <RenderSearch
-                    handleSearchQuery={this.handleSearchQuery}
-                    searchQuery={searchQuery}
-                    totalQueryAds={totalQueryAds}
-                    cancelSearch={this.cancelSearch}
-                    isFetching={isFetching}
-                    adsLength={arr.length}
-                    search={this.search}
-                    totalAds={totalAds}
-                />
-
+                <RenderSearchBar />
                 {noResult ? (
-                    <NetworkError message={noResultmessage} iconName='magnify-close' cancelSearch={this.cancelSearch} />
+                    <NetworkError message={noResultMessage} iconName='magnify-close' cancelSearch={cancelSearch} />
                 ) : (
                     <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-                        {arr.length > 0 && !noResult ? (
+                        {adsArr.length > 0 && !noResult ? (
                             <RecyclerListView
-                                onEndReached={searchLastId ? this.searchMore : this.fetchMore}
                                 layoutProvider={this._layoutProvider}
                                 dataProvider={stateDataProvider}
                                 rowRenderer={this._rowRenderer}
+                                onEndReachedThreshold={10}
+                                onEndReached={this.renderMore}
                                 scrollViewProps={{
                                     refreshControl: (
                                         <RefreshControl
                                             refreshing={refreshing}
                                             onRefresh={async () => {
-                                                this.setState({ refreshing: true, searchQuery: '' });
-                                                await this.latestFetch(100);
-                                                console.log('refreshing false');
-                                                this.setState({ refreshing: false });
+                                                await latestFetch(100);
                                             }}
                                         />
                                     )
@@ -125,6 +87,15 @@ class Home extends Component {
             </Block>
         );
     }
+
+    renderMore = () => {
+        const { searchLastId, fetchMore, searchMore, lastId } = this.props.adState;
+        if (lastId) {
+            fetchMore();
+        } else if (searchLastId) {
+            searchMore();
+        }
+    };
 
     _rowRenderer = (type, data) => {
         switch (type) {
@@ -144,155 +115,9 @@ class Home extends Component {
                 return null;
         }
     };
-
-    cancelSearch = () => {
-        this.setState({
-            lastId: '',
-            searchLastId: '',
-            searchQuery: '',
-            noResult: false,
-            totalQueryAds: ''
-        });
-
-        this.latestFetch(100);
-    };
-
-    getTotalAds = async () => {
-        let totalAds = await getTotalAds();
-        this.setState({
-            totalAds
-        });
-    };
-
-    componentDidMount = () => {
-        this.latestFetch();
-        this.getTotalAds();
-    };
-
-    latestFetch = async (n) => {
-        this.setState({
-            adsArr: [],
-            lastId: ''
-        });
-
-        let count = n ? n : 66;
-
-        try {
-            let latestAds = await getLatestAds(count);
-            let { ads, lastId } = latestAds;
-            this.setState({
-                adsArr: ads,
-                lastId: lastId,
-                noResult: false
-            });
-        } catch (error) {
-            console.log('error: ', error);
-            this.setState({
-                noResult: true
-            });
-        }
-    };
-
-    fetchMore = async () => {
-        console.log('fetching More');
-        let { adsArr } = this.state;
-        this.setState({
-            isFetching: true
-        });
-        let moreAds = await fetchMoreAds(this.state.lastId);
-        let { ads, lastId } = moreAds;
-        let newArr = adsArr.concat(ads);
-
-        this.setState({
-            adsArr: newArr,
-            lastId: lastId,
-            isFetching: false
-        });
-    };
-
-    searchMore = async () => {
-        let { adsArr } = this.state;
-
-        this.setState({
-            isFetching: true
-        });
-        const { searchLastId, searchQuery } = this.state;
-        let moreAds = await searchMoreAds(searchQuery, searchLastId);
-        console.log('moreAds: ', moreAds);
-        let { ads, lastId, status } = moreAds;
-        if (status !== 200) {
-            Toast.show({
-                text: `No more ${searchQuery} ads found!`,
-                buttonText: 'Okay',
-                duration: 2000,
-                type: 'danger'
-            });
-            this.setState({
-                isFetching: false
-            });
-            return;
-        }
-
-        let newArr = adsArr.concat(ads);
-
-        this.setState({
-            adsArr: newArr,
-            searchLastId: lastId,
-            isFetching: false
-        });
-    };
-
-    handleSearchQuery = (searchQuery) => {
-        console.log('searchQuery: ', searchQuery);
-        this.setState({ searchQuery });
-    };
-
-    search = async () => {
-        const { searchQuery } = this.state;
-        console.log('initial search ------->');
-        if (!searchQuery) {
-            ToastAndroid.show('Please enter something!', ToastAndroid.SHORT);
-            return;
-        }
-
-        this.setState({
-            searchQuery: searchQuery,
-            isFetching: true
-        });
-
-        let searchedAds = await searchAds(searchQuery);
-        let { ads, lastId, status, totalQueryAds } = searchedAds;
-        console.log('status: ', status);
-
-        if (status !== 200) {
-            // ToastAndroid.show('No result found!', ToastAndroid.SHORT);
-            Toast.show({
-                text: 'No result found!',
-                buttonText: 'Okay',
-                duration: 2000,
-                type: 'danger'
-            });
-            this.setState({
-                isFetching: false,
-                noResult: true,
-                noResultmessage: `No ad found containing "${searchQuery}"`
-            });
-            return;
-        }
-        this.setState({
-            adsArr: []
-        });
-
-        this.setState({
-            totalQueryAds: totalQueryAds,
-            adsArr: ads,
-            searchLastId: lastId,
-            isFetching: false
-        });
-    };
 }
 
-export default Home;
+export default withAds(Home);
 
 const styles = {
     containerGridLeft: {

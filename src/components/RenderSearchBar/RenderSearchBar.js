@@ -4,14 +4,25 @@ import { Block, Input, Text } from 'galio-framework';
 import { TouchableOpacity } from 'react-native';
 import { primaryColor, grayColor } from '../../config/Constants/Colors';
 import { width } from '../../config/Constants/Dimensions';
+import { withAds } from '../../contexts/AdContext';
 
-export default (RenderSearch = (props) => {
-    const { isFetching, totalAds, adsLength, totalQueryAds, searchQuery, search } = props;
+RenderSearchBar = (props) => {
+    const {
+        adsArr,
+        totalAds,
+        totalQueryAds,
+        isFetching,
+        search,
+        handleSearchQuery,
+        cancelSearch,
+        searchQuery
+    } = props.adState;
+
     return (
         <Block style={{ height: 110, backgroundColor: primaryColor }}>
             <Input
                 value={searchQuery}
-                onChangeText={(searchQuery) => props.handleSearchQuery(searchQuery)}
+                onChangeText={(e) => handleSearchQuery(e)}
                 placeholder='Search...'
                 borderless
                 placeholderTextColor={grayColor}
@@ -28,7 +39,7 @@ export default (RenderSearch = (props) => {
                     <TouchableOpacity
                         onPress={() => {
                             if (searchQuery.length > 0) {
-                                props.cancelSearch();
+                                cancelSearch();
                             }
                         }}
                         styleName='flexible'>
@@ -42,15 +53,17 @@ export default (RenderSearch = (props) => {
             />
             <Block center>
                 <Text style={{ fontSize: 11, color: 'white' }}>
-                    DB : {totalAds} - State : {adsLength}
+                    DB : {totalAds} - State : {adsArr.length}
                 </Text>
 
                 <Text style={{ fontSize: 11, color: 'white' }}>
-                    Total {totalQueryAds && totalQueryAds} ads found for {props.searchQuery && props.searchQuery}
+                    Total {totalQueryAds && totalQueryAds} ads found for {searchQuery && searchQuery}
                 </Text>
 
                 <Text style={{ fontSize: 11, color: 'white' }}>{isFetching && 'Fetching more.....'}</Text>
             </Block>
         </Block>
     );
-});
+};
+
+export default withAds(RenderSearchBar);

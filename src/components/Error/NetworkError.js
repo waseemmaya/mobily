@@ -20,8 +20,6 @@ export default class NetworkError extends Component {
                         onRefresh={async () => {
                             this.setState({ refreshing: true });
                             await cancelSearch();
-                            console.log('refreshing false');
-                            this.setState({ refreshing: false });
                         }}
                     />
                 }>

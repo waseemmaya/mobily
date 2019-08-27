@@ -47,7 +47,6 @@ export const searchAds = async (searchQuery) => {
         console.log('error: ---->', error);
     }
 
-    console.log('resObj: ', resObj);
     return resObj;
 };
 
