@@ -83,6 +83,7 @@ class Home extends Component {
             <Block style={{ flex: 1 }}>
                 <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
                 <RenderSearch
+                    handleSearchQuery={this.handleSearchQuery}
                     searchQuery={searchQuery}
                     totalQueryAds={totalQueryAds}
                     cancelSearch={this.cancelSearch}
@@ -91,8 +92,9 @@ class Home extends Component {
                     search={this.search}
                     totalAds={totalAds}
                 />
+
                 {noResult ? (
-                    <NetworkError message={noResultmessage} iconName='magnify-close' latestFetch={this.latestFetch} />
+                    <NetworkError message={noResultmessage} iconName='magnify-close' cancelSearch={this.cancelSearch} />
                 ) : (
                     <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
                         {arr.length > 0 && !noResult ? (
@@ -242,7 +244,13 @@ class Home extends Component {
         });
     };
 
-    search = async (searchQuery) => {
+    handleSearchQuery = (searchQuery) => {
+        console.log('searchQuery: ', searchQuery);
+        this.setState({ searchQuery });
+    };
+
+    search = async () => {
+        const { searchQuery } = this.state;
         console.log('initial search ------->');
         if (!searchQuery) {
             ToastAndroid.show('Please enter something!', ToastAndroid.SHORT);
