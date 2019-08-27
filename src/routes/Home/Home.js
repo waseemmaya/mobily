@@ -134,7 +134,6 @@ class Home extends Component {
                         <RenderAd ad={data} />
                     </View>
                 );
-            // );
             case ViewTypes.HALF_RIGHT:
                 return (
                     <View style={styles.containerGridRight}>
@@ -155,7 +154,7 @@ class Home extends Component {
             totalQueryAds: ''
         });
 
-        this.latestFetch(50);
+        this.latestFetch(100);
     };
 
     getTotalAds = async () => {
@@ -212,7 +211,6 @@ class Home extends Component {
     };
 
     searchMore = async () => {
-        console.log('searching more ------->');
         let { adsArr } = this.state;
 
         this.setState({
@@ -226,7 +224,7 @@ class Home extends Component {
             Toast.show({
                 text: `No more ${searchQuery} ads found!`,
                 buttonText: 'Okay',
-                duration: 3000,
+                duration: 2000,
                 type: 'danger'
             });
             this.setState({
@@ -271,7 +269,7 @@ class Home extends Component {
             Toast.show({
                 text: 'No result found!',
                 buttonText: 'Okay',
-                duration: 3000,
+                duration: 2000,
                 type: 'danger'
             });
             this.setState({
@@ -279,7 +277,6 @@ class Home extends Component {
                 noResult: true,
                 noResultmessage: `No ad found containing "${searchQuery}"`
             });
-            // this.latestFetch();
             return;
         }
         this.setState({
