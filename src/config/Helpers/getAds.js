@@ -41,9 +41,7 @@ export const searchAds = async (searchQuery) => {
         let res = await axios.get(`${API}ads/search?query=${searchQuery}`);
         const { status, data } = res;
         resObj.status = status;
-        (resObj.ads = data.ads),
-            (resObj.lastId = data.lastId),
-            (resObj.totalQueryAds = data.totalQueryAds ? data.totalQueryAds : 0);
+        (resObj.ads = data.ads), (resObj.lastId = data.lastId), (resObj.totalQueryAds = data.totalQueryAds);
     } catch (error) {
         resObj.status = 404;
         console.log('error: ---->', error);
