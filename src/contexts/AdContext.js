@@ -10,7 +10,8 @@ let adState = {
     noResult: false,
     isFetching: false,
     refreshing: false,
-    noResultMessage: ''
+    noResultMessage: '',
+    searchEnabled: false
 };
 
 const AdContext = createContext(adState);

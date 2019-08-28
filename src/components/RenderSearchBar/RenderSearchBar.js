@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Icon } from 'native-base';
 import { Block, Input, Text } from 'galio-framework';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Keyboard } from 'react-native';
 import { primaryColor, grayColor } from '../../config/Constants/Colors';
 import { width } from '../../config/Constants/Dimensions';
 import { withAds } from '../../contexts/AdContext';
@@ -15,12 +15,26 @@ RenderSearchBar = (props) => {
         search,
         handleSearchQuery,
         cancelSearch,
-        searchQuery
+        searchQuery,
+        enableSearch,
+        disableSearch
     } = props.adState;
+
+    forceLoseFocus = () => {
+        if (!searchQuery) {
+            disableSearch();
+            console.warn('hide');
+        }
+    };
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidHide', forceLoseFocus);
+    }, []);
 
     return (
         <Block style={{ height: 110, backgroundColor: primaryColor }}>
             <Input
+                onFocus={enableSearch}
+                // onBlur={disableSearch}
                 value={searchQuery}
                 onChangeText={(e) => handleSearchQuery(e)}
                 placeholder='Search...'
@@ -40,6 +54,7 @@ RenderSearchBar = (props) => {
                         onPress={() => {
                             if (searchQuery.length > 0) {
                                 cancelSearch();
+                                disableSearch();
                             }
                         }}
                         styleName='flexible'>

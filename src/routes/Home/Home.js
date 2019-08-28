@@ -9,6 +9,7 @@ import { primaryColor } from '../../config/Constants/Colors';
 import { withAds } from '../../contexts/AdContext';
 import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
 import { width } from '../../config/Constants/Dimensions';
+import SearchEnabledPage from '../../components/SearchEnabledPage';
 
 const ViewTypes = {
     HALF_LEFT: 1,
@@ -46,7 +47,37 @@ class Home extends Component {
     }
 
     render() {
-        const { adsArr, refreshing, latestFetch, noResultMessage, noResult, cancelSearch } = this.props.adState;
+        return (
+            <Block style={{ flex: 1 }}>
+                <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
+                <RenderSearchBar />
+                {this.renderMainScreen()}
+            </Block>
+        );
+    }
+
+    renderMainScreen = () => {
+        const {
+            adsArr,
+            refreshing,
+            latestFetch,
+            noResultMessage,
+            noResult,
+            cancelSearch,
+            searchEnabled
+        } = this.props.adState;
+
+        if (searchEnabled) {
+            return <SearchEnabledPage />;
+        }
+
+        if (noResult) {
+            return <NetworkError message={noResultMessage} iconName='magnify-close' cancelSearch={cancelSearch} />;
+        }
+
+        if (adsArr.length < 1) {
+            return <Loader color={primaryColor} />;
+        }
 
         let dataProvider = new DataProvider((r1, r2) => {
             return r1 !== r2;
@@ -55,38 +86,28 @@ class Home extends Component {
 
         return (
             <Block style={{ flex: 1 }}>
-                <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
-                <RenderSearchBar />
-                {noResult ? (
-                    <NetworkError message={noResultMessage} iconName='magnify-close' cancelSearch={cancelSearch} />
-                ) : (
-                    <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-                        {adsArr.length > 0 && !noResult ? (
-                            <RecyclerListView
-                                layoutProvider={this._layoutProvider}
-                                dataProvider={stateDataProvider}
-                                rowRenderer={this._rowRenderer}
-                                onEndReachedThreshold={10}
-                                onEndReached={this.renderMore}
-                                scrollViewProps={{
-                                    refreshControl: (
-                                        <RefreshControl
-                                            refreshing={refreshing}
-                                            onRefresh={async () => {
-                                                await latestFetch(100);
-                                            }}
-                                        />
-                                    )
-                                }}
-                            />
-                        ) : (
-                            <Loader color={primaryColor} />
-                        )}
-                    </Block>
-                )}
+                <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+                    <RecyclerListView
+                        layoutProvider={this._layoutProvider}
+                        dataProvider={stateDataProvider}
+                        rowRenderer={this._rowRenderer}
+                        onEndReachedThreshold={10}
+                        onEndReached={this.renderMore}
+                        scrollViewProps={{
+                            refreshControl: (
+                                <RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={async () => {
+                                        await latestFetch(100);
+                                    }}
+                                />
+                            )
+                        }}
+                    />
+                </Block>
             </Block>
         );
-    }
+    };
 
     renderMore = () => {
         const { searchLastId, fetchMore, searchMore, lastId } = this.props.adState;
