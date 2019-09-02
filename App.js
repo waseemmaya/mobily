@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, StatusBar, AsyncStorage } from 'react-native';
 import { Root, Toast } from 'native-base';
 import Navigator from './src/Navigator';
 import AdContext from './src/contexts/AdContext';
 import { getLatestAds, fetchMoreAds, searchAds, getTotalAds, searchMoreAds } from './src/config/Helpers/getAds';
+import { primaryColor } from './src/config/Constants/Colors';
+import firebase from 'react-native-firebase';
 
 function App(props) {
     const [ adsArr, setadsArr ] = useState([]);
@@ -51,6 +53,7 @@ function App(props) {
             return;
         }
         setisFetching(true);
+        setadsArr([]);
         let res = await searchAds(searchQuery);
 
         if (res.status !== 200) {
@@ -65,7 +68,6 @@ function App(props) {
             setnoResultMessage(`No ad found containing "${searchQuery}"`);
             return;
         }
-        setadsArr([]);
         settotalQueryAds(res.totalQueryAds);
         setadsArr(res.ads);
         setsearchLastId(res.lastId);
@@ -111,14 +113,14 @@ function App(props) {
         setlastId('');
         setrefreshing(true);
         setsearchQuery('');
-        let count = n ? n : 66;
+        let count = n ? n : 20;
         try {
             let latestAds = await getLatestAds(count);
             setadsArr(latestAds.ads);
             setlastId(latestAds.lastId);
             setrefreshing(false);
         } catch (error) {
-            console.log('error: ', error);
+            console.warn('error: ', error);
             setnoResult(true);
             setrefreshing(false);
         }
@@ -129,7 +131,20 @@ function App(props) {
         settotalAds(totalAds);
     };
 
+    getToken = async () => {
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        console.warn('before fcmToken: ', fcmToken);
+        if (!fcmToken) {
+            fcmToken = await firebase.messaging().getToken();
+            if (fcmToken) {
+                console.warn('after fcmToken: ', fcmToken);
+                await AsyncStorage.setItem('fcmToken', fcmToken);
+            }
+        }
+    };
+
     useEffect(() => {
+        getToken();
         getTotalAdsFromDB();
         latestFetch();
     }, []);
@@ -156,12 +171,12 @@ function App(props) {
         enableSearch: enableSearch,
         disableSearch: disableSearch
     };
-    console.warn('searchEnabled: ', searchEnabled);
 
     return (
         <View style={{ flex: 1 }}>
             <Root>
                 <AdContext.Provider value={adState}>
+                    <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
                     <Navigator />
                 </AdContext.Provider>
             </Root>

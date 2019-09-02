@@ -17,7 +17,8 @@ RenderSearchBar = (props) => {
         cancelSearch,
         searchQuery,
         enableSearch,
-        disableSearch
+        disableSearch,
+        searchEnabled
     } = props.adState;
 
     forceLoseFocus = () => {
@@ -32,6 +33,11 @@ RenderSearchBar = (props) => {
 
     return (
         <Block style={{ height: 110, backgroundColor: primaryColor }}>
+            {/* {searchEnabled && (
+                <TouchableOpacity onPress={disableSearch} styleName='flexible'>
+                    <Icon style={{ fontSize: 28, color: grayColor }} name='ios-close' type='Ionicons' />
+                </TouchableOpacity>
+            )} */}
             <Input
                 onFocus={enableSearch}
                 // onBlur={disableSearch}

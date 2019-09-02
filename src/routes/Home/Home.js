@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { StatusBar, View, RefreshControl } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { Block } from 'galio-framework';
+import moment from 'moment';
 import RenderAd from './RenderAd';
 import NetworkError from '../../components/Error/NetworkError';
 import Loader from '../../components/Loader/Loader';
@@ -10,10 +11,12 @@ import { withAds } from '../../contexts/AdContext';
 import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
 import { width } from '../../config/Constants/Dimensions';
 import SearchEnabledPage from '../../components/SearchEnabledPage';
+import { Image, View, Caption, Text, Row, TouchableOpacity } from '@shoutem/ui';
 
 const ViewTypes = {
     HALF_LEFT: 1,
-    HALF_RIGHT: 2
+    HALF_RIGHT: 2,
+    FULL: 0
 };
 
 class Home extends Component {
@@ -22,21 +25,13 @@ class Home extends Component {
 
         this._layoutProvider = new LayoutProvider(
             (index) => {
-                if (index % 2 === 0) {
-                    return ViewTypes.HALF_LEFT;
-                } else {
-                    return ViewTypes.HALF_RIGHT;
-                }
+                return ViewTypes.FULL;
             },
             (type, dim) => {
                 switch (type) {
-                    case ViewTypes.HALF_LEFT:
-                        dim.width = width / 2 - 0.0001;
-                        dim.height = 160;
-                        break;
-                    case ViewTypes.HALF_RIGHT:
-                        dim.width = width / 2;
-                        dim.height = 160;
+                    case ViewTypes.FULL:
+                        dim.width = width;
+                        dim.height = 120;
                         break;
                     default:
                         dim.width = 0;
@@ -49,7 +44,6 @@ class Home extends Component {
     render() {
         return (
             <Block style={{ flex: 1 }}>
-                <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
                 <RenderSearchBar />
                 {this.renderMainScreen()}
             </Block>
@@ -64,7 +58,8 @@ class Home extends Component {
             noResultMessage,
             noResult,
             cancelSearch,
-            searchEnabled
+            searchEnabled,
+            isFetching
         } = this.props.adState;
 
         if (searchEnabled) {
@@ -93,6 +88,7 @@ class Home extends Component {
                         rowRenderer={this._rowRenderer}
                         onEndReachedThreshold={10}
                         onEndReached={this.renderMore}
+                        renderFooter={this.renderFooter}
                         scrollViewProps={{
                             refreshControl: (
                                 <RefreshControl
@@ -109,6 +105,13 @@ class Home extends Component {
         );
     };
 
+    renderFooter = () => {
+        const { isFetching } = this.props.adState;
+        //Second view makes sure we don't unnecessarily change height of the list on this event. That might cause indicator to remain invisible
+        //The empty view can be removed once you've fetched all the data
+        return isFetching ? <Loader style={{ margin: 30 }} color={primaryColor} /> : <View style={{ height: 60 }} />;
+    };
+
     renderMore = () => {
         const { searchLastId, fetchMore, searchMore, lastId } = this.props.adState;
         if (lastId) {
@@ -118,20 +121,11 @@ class Home extends Component {
         }
     };
 
-    _rowRenderer = (type, data) => {
+    _rowRenderer = (type, ad) => {
         switch (type) {
-            case ViewTypes.HALF_LEFT:
-                return (
-                    <View style={styles.containerGridLeft}>
-                        <RenderAd ad={data} />
-                    </View>
-                );
-            case ViewTypes.HALF_RIGHT:
-                return (
-                    <View style={styles.containerGridRight}>
-                        <RenderAd ad={data} />
-                    </View>
-                );
+            case ViewTypes.FULL:
+                return <RenderAd ad={ad} />;
+
             default:
                 return null;
         }
@@ -139,18 +133,3 @@ class Home extends Component {
 }
 
 export default withAds(Home);
-
-const styles = {
-    containerGridLeft: {
-        marginTop: 5,
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        flex: 1
-    },
-    containerGridRight: {
-        marginTop: 5,
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        flex: 1
-    }
-};

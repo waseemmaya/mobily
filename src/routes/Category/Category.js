@@ -21,7 +21,7 @@ export default class Category extends Component {
         const { imagesArrays, isUploading, visible } = this.state;
         return (
             <Block style={{ flex: 1 }}>
-                <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
+                {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
                 <Block>{this.renderSearchBar()}</Block>
                 {isUploading && <Loader color={primaryColor} />}
                 {!isUploading && (

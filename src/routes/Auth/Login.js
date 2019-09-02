@@ -20,7 +20,7 @@ export default class Login extends Component {
         return (
             <ScrollView>
                 <Block style={{ flex: 1, justifyContent: 'space-between' }}>
-                    <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
+                    {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
                     <Block
                         style={{
                             flex: 1,

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import API from '../API/API';
 
+let warn = console.warn();
+
 // const LocalAPI = 'http://10.0.2.2:3001/';
 // const CloudAPI = `https://mobily-pk.herokuapp.com/`;
 
@@ -17,7 +19,6 @@ export const getLatestAds = async (no) => {
 
 export const fetchMoreAds = async (oldLastId) => {
     let url = `${API}ads?lastId=${oldLastId}`;
-    console.log('url: ', url);
     let data = await axios.get(url);
     let { ads, lastId } = data.data;
     let res = {
@@ -51,12 +52,10 @@ export const searchAds = async (searchQuery) => {
 };
 
 export const searchMoreAds = async (searchQuery, oldLastId) => {
-    console.log('oldLastId: ', oldLastId);
     let resObj = {};
 
     try {
         let res = await axios.get(`${API}ads/search?query=${searchQuery}&lastId=${oldLastId}`);
-        console.log('res: ', res);
         let { status, data } = res;
         resObj.status = status;
         (resObj.ads = data.ads), (resObj.lastId = data.lastId);

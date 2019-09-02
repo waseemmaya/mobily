@@ -16,7 +16,7 @@ export default class Add extends Component {
     render() {
         return (
             <Block>
-                <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
+                {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
                 <Block middle style={{ height: 50, backgroundColor: primaryColor }}>
                     <Text h5 color={whiteColor}>
                         Post your Ad
