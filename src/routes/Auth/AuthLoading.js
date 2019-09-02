@@ -21,7 +21,6 @@ export default class AuthLoading extends React.Component {
         let camPerm = await requestGalleryPermission();
         let camPerm2 = await requestCameraPermission();
         let messagePermision = await checkFirebasePermission();
-        console.warn('messagePermision: ', messagePermision);
 
         this.props.navigation.navigate('Home');
         // this.props.navigation.navigate(res ? 'Home' : 'Login');
