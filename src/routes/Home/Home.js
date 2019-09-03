@@ -52,6 +52,7 @@ class Home extends Component {
 
     renderMainScreen = () => {
         const {
+            user,
             adsArr,
             refreshing,
             latestFetch,
@@ -122,6 +123,9 @@ class Home extends Component {
     };
 
     _rowRenderer = (type, ad) => {
+        const { user, getUser } = this.props.adState;
+        let { favtAds } = user;
+
         switch (type) {
             case ViewTypes.FULL:
                 return <RenderAd ad={ad} />;

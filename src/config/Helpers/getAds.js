@@ -1,5 +1,6 @@
 import axios from 'axios';
 import API from '../API/API';
+import { getUserID } from './AuthFunctions';
 
 let warn = console.warn();
 
@@ -76,4 +77,10 @@ export const viewIncrement = async (id) => {
         console.log('error: ', error);
         return error;
     }
+};
+
+export const getFavtAds = async () => {
+    let userId = await getUserID();
+
+    return await axios.get(`${API}ads/getfavtads?userId=${userId}`);
 };

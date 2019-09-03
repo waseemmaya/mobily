@@ -78,7 +78,10 @@ HomeStack.navigationOptions = ({ navigation }) => {
 // Ads Tab and its stack childs
 const AdsStack = createStackNavigator(
     {
-        Ads: { screen: Ads }
+        Ads: { screen: Ads },
+        ViewAd: {
+            screen: ViewAd
+        }
     },
     {
         headerMode: 'none'

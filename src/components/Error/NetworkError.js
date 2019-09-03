@@ -19,7 +19,7 @@ export default class NetworkError extends Component {
                         refreshing={refreshing}
                         onRefresh={async () => {
                             this.setState({ refreshing: true });
-                            await cancelSearch();
+                            (await cancelSearch) && cancelSearch();
                         }}
                     />
                 }>
@@ -28,7 +28,7 @@ export default class NetworkError extends Component {
                     <Text style={{ color: grayColor }}>
                         {message ? message : 'Network Error, Turn on Wifi or Mobile Data'}
                     </Text>
-                    <Text style={{ color: grayColor }}>Pull to refresh</Text>
+                    <Text style={{ color: grayColor }}>{cancelSearch && 'Pull to refresh'}</Text>
                 </Block>
             </ScrollView>
         );

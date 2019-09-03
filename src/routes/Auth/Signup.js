@@ -22,7 +22,6 @@ export default class Signup extends Component {
         return (
             <ScrollView>
                 <Block style={{ flex: 1 }}>
-                    {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
                     <Block
                         style={{
                             flex: 1,
@@ -140,17 +139,27 @@ export default class Signup extends Component {
     handleSignup = async () => {
         let { email, password, firstName, phone, lastName, againPassword } = this.state;
 
+        // let signupObj = {
+        //     email,
+        //     password,
+        //     againPassword,
+        //     firstName,
+        //     lastName,
+        //     phone
+        // };
+
         let signupObj = {
-            email,
-            password,
-            againPassword,
-            firstName,
-            lastName,
-            phone
+            email: 'waseemmayaa@gmail.com',
+            password: '123456',
+            againPassword: '123456',
+            firstName: 'Waseem',
+            lastName: 'maya',
+            phone: '03123767311'
         };
+        console.warn('signupObj: ', signupObj);
 
         const res = await onSignup(signupObj);
         // console.log('res signup --->: ', res);
-        // return this.props.navigation.navigate(res ? 'Home' : 'Signup');
+        return this.props.navigation.navigate(res ? 'Home' : 'Signup');
     };
 }

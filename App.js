@@ -6,6 +6,8 @@ import AdContext from './src/contexts/AdContext';
 import { getLatestAds, fetchMoreAds, searchAds, getTotalAds, searchMoreAds } from './src/config/Helpers/getAds';
 import { primaryColor } from './src/config/Constants/Colors';
 import firebase from 'react-native-firebase';
+import { getUserID } from './src/config/Helpers/AuthFunctions';
+import { getCurrentUser } from './src/config/Helpers/AuthFunctions';
 
 function App(props) {
     const [ adsArr, setadsArr ] = useState([]);
@@ -19,6 +21,8 @@ function App(props) {
     const [ refreshing, setrefreshing ] = useState(false);
     const [ searchEnabled, setsearchEnabled ] = useState(false);
     const [ totalAds, settotalAds ] = useState(0);
+    const [ userID, setuserID ] = useState(null);
+    const [ user, setuser ] = useState(null);
 
     cancelSearch = () => {
         setlastId('');
@@ -131,9 +135,15 @@ function App(props) {
         settotalAds(totalAds);
     };
 
+    getUserIDFromLocal = async () => {
+        let id = await getUserID();
+        console.warn('id in app.js --->: ', id);
+        setuserID(id);
+    };
+
     getToken = async () => {
         let fcmToken = await AsyncStorage.getItem('fcmToken');
-        console.warn('before fcmToken: ', fcmToken);
+        // console.warn('before fcmToken: ', fcmToken);
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken();
             if (fcmToken) {
@@ -143,13 +153,22 @@ function App(props) {
         }
     };
 
+    getUser = async () => {
+        console.warn('281');
+        let user = await getCurrentUser();
+        setuser(user);
+    };
+
     useEffect(() => {
-        getToken();
+        getUser();
         getTotalAdsFromDB();
         latestFetch();
+        getToken();
     }, []);
 
     let adState = {
+        userID: userID,
+        user: user,
         adsArr: adsArr,
         totalAds: totalAds,
         lastId: lastId,
@@ -169,7 +188,8 @@ function App(props) {
         searchMore: searchMore,
         searchEnabled: searchEnabled,
         enableSearch: enableSearch,
-        disableSearch: disableSearch
+        disableSearch: disableSearch,
+        getUser: getUser
     };
 
     return (

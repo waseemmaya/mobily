@@ -1,79 +1,63 @@
-// import React from 'react';
-// import { Text, View } from 'react-native';
-// import PushNotification from '../Messages/PushNotification';
-// // import StoreScreen from '../StoreScreen/StoreScreen';
-
-// export default function Ads() {
-//     return <PushNotification />;
-//     return (
-//         <View>
-//             <Text>My Ads</Text>
-//         </View>
-//     );
-// }
-
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Button, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Button, TouchableOpacity } from 'react-native';
+import { getFavtAds } from '../../config/Helpers/getAds';
+import RenderFavtAd from './RenderFavtAd';
+import Loader from '../../components/Loader/Loader';
+import { primaryColor } from '../../config/Constants/Colors';
+import NetworkError from '../../components/Error/NetworkError';
+import { Block, Text } from 'galio-framework';
 
 class Ads extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            favtAds: null
         };
     }
-    render() {
-        return (
-            <ScrollView>
-                <View>
-                    {this.state.data.map((val) => {
-                        return (
-                            <View style={styles.container}>
-                                <View>
-                                    <Image source={{ uri: val.picture.large }} style={styles.photo} />
-                                </View>
-                                <View style={styles.name}>
-                                    <Text style={styles.heading}>{val.name.first}</Text>
-                                    <Text style={styles.desc}>{val.name.last}</Text>
-                                </View>
-                                <View style={styles.buttonView}>
-                                    <TouchableOpacity onPress={() => {}}>
-                                        <Text style={styles.button}>GET</Text>
-                                    </TouchableOpacity>
-                                    <Text style={{ color: '#A6A6A8', marginTop: 2, fontSize: 12 }}>
-                                        In-App Purchases
-                                    </Text>
-                                </View>
-
-                                <View style={styles.container2} />
-                            </View>
-                        );
-                    })}
-                </View>
-            </ScrollView>
-        );
+    async componentDidMount() {
+        try {
+            let favtAds = await getFavtAds();
+            console.warn('asd: ', favtAds);
+            this.setState({
+                favtAds: favtAds.data.ads
+            });
+        } catch (err) {
+            this.setState({
+                favtAds: []
+            });
+        }
     }
+    render() {
+        const { favtAds } = this.state;
+        if (favtAds === null) {
+            return <Loader color={primaryColor} />;
+        }
+        if (favtAds.length === 0) {
+            return <NetworkError message={'There is not any favorite ad'} iconName='magnify-close' />;
+        }
 
-    componentDidMount() {
-        const url = `https://randomuser.me/api/?seed=1&page=1&results=10`;
-        fetch(url)
-            .then((res) => res.json())
-            .then((res) => {
-                this.setState({
-                    data: res.results
-                });
-            })
-            .catch((error) => {});
+        return (
+            <Block style={{ flex: 1 }}>
+                <Block style={{ height: 60, backgroundColor: primaryColor }}>
+                    <Block center>
+                        <Text style={{ fontSize: 20, color: 'white', marginTop: 20 }}>Favourite Ads</Text>
+                    </Block>
+                </Block>
+                <ScrollView style={{ flex: 1 }}>
+                    {favtAds.map((val) => {
+                        return <RenderFavtAd key={val._id} ad={val} />;
+                    })}
+                </ScrollView>
+            </Block>
+        );
     }
 }
 
 export default Ads;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 25,
-        marginLeft: 8,
-        padding: 12,
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -111,7 +95,6 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         color: '#0677F6',
         fontSize: 18,
-        width: 100,
         fontWeight: 'bold',
         overflow: 'hidden',
         padding: 5,
