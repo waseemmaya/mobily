@@ -25,10 +25,13 @@ export default class Login extends Component {
                         style={{
                             flex: 1,
                             flexDirection: 'row',
-                            justifyContent: 'center',
-                            backgroundColor: primaryColor
+                            justifyContent: 'center'
+                            // backgroundColor: primaryColor
                         }}>
-                        <Image style={{ width: 200, height: 200 }} source={require('../../config/Assets/logo.png')} />
+                        <Image
+                            style={{ width: 180, height: 180, marginTop: 20 }}
+                            source={require('../../config/Assets/mobilylogo.png')}
+                        />
                     </Block>
 
                     <Block
@@ -79,7 +82,7 @@ export default class Login extends Component {
               Login
             </Button> */}
                     </Block>
-                    <Block style={{ flex: 1, marginTop: 20 }}>{this.renderAuthProvide()}</Block>
+                    <Block style={{ flex: 1, marginTop: 30 }}>{this.renderAuthProvide()}</Block>
 
                     <Block
                         style={{
