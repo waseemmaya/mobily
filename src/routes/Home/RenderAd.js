@@ -9,25 +9,26 @@ import { grayColor } from '../../config/Constants/Colors';
 import API from '../../config/API/API';
 import { getUserID } from '../../config/Helpers/AuthFunctions';
 import { withAds } from '../../contexts/AdContext';
-
+// removefromfavt
 class RenderAd extends Component {
-    addToFavt = async (_id) => {
+    toggleFavt = async (_id) => {
         const { getUser, user } = this.props.adState;
         if (!user) {
             return;
         }
         let { favtAds } = user;
+
+        let url = `${API}ads/addtofavt`;
         for (let i = 0; i < favtAds.length; i++) {
             if (favtAds[i] === _id) {
-                alert('already added WIP');
-                return;
+                url = `${API}ads/removefromfavt`;
             }
         }
         try {
             let userId = await getUserID();
             let res = await axios({
                 method: 'post',
-                url: `${API}ads/addtofavt`,
+                url: url,
                 data: {
                     id: _id,
                     userId: userId
@@ -74,7 +75,7 @@ class RenderAd extends Component {
                         <View styleName='horizontal space-between'>
                             <Caption>{moment(ad.postedAt).fromNow()}</Caption>
                             <Caption>Rs {ad.price}</Caption>
-                            <TouchableOpacity onPress={() => this.addToFavt(ad._id)}>
+                            <TouchableOpacity onPress={() => this.toggleFavt(ad._id)}>
                                 <Icon style={{ fontSize: 21, color: grayColor }} name={iconName} type='Ionicons' />
                             </TouchableOpacity>
                         </View>

@@ -88,6 +88,17 @@ const AdsStack = createStackNavigator(
     }
 );
 
+AdsStack.navigationOptions = ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+
+    return {
+        tabBarVisible
+    };
+};
+
 // Settings Tab and its stack childs
 const SettingsStack = createStackNavigator(
     {

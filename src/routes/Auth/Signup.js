@@ -4,6 +4,7 @@ import { StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { primaryColor } from '../../config/Constants/Colors';
 import { onSignup } from '../../config/Helpers/AuthFunctions';
+import Loader from '../../components/Loader/Loader';
 
 export default class Signup extends Component {
     constructor(props) {
@@ -14,11 +15,16 @@ export default class Signup extends Component {
             email: '',
             password: '',
             phone: '',
-            againPassword: ''
+            againPassword: '',
+            submitting: false
         };
     }
     render() {
-        let { email, password, firstName, phone, lastName, againPassword } = this.state;
+        let { email, password, firstName, phone, lastName, againPassword, submitting } = this.state;
+
+        if (submitting) {
+            return <Loader color={primaryColor} />;
+        }
         return (
             <ScrollView>
                 <Block style={{ flex: 1 }}>
@@ -137,29 +143,42 @@ export default class Signup extends Component {
     }
 
     handleSignup = async () => {
+        this.setState({
+            submitting: true
+        });
         let { email, password, firstName, phone, lastName, againPassword } = this.state;
 
-        // let signupObj = {
-        //     email,
-        //     password,
-        //     againPassword,
-        //     firstName,
-        //     lastName,
-        //     phone
-        // };
-
         let signupObj = {
-            email: 'waseemmayaa@gmail.com',
-            password: '123456',
-            againPassword: '123456',
-            firstName: 'Waseem',
-            lastName: 'maya',
-            phone: '03123767311'
+            email,
+            password,
+            againPassword,
+            firstName,
+            lastName,
+            phone
         };
-        console.warn('signupObj: ', signupObj);
 
-        const res = await onSignup(signupObj);
-        // console.log('res signup --->: ', res);
+        try {
+            const res = await onSignup(signupObj);
+            console.warn('sign up res: ', res);
+            alert(res.data);
+            this.setState({
+                submitting: false
+            });
+        } catch (error) {
+            console.warn('signup err: ', error);
+            this.setState({
+                submitting: false
+            });
+        }
+
+        // if (res.status === 200) {
+        //     await AsyncStorage.setItem(USER_TOKEN, res.data._id);
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+
+        return;
         return this.props.navigation.navigate(res ? 'Home' : 'Signup');
     };
 }

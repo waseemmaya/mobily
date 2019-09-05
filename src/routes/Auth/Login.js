@@ -4,6 +4,7 @@ import { StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { onLogin } from '../../config/Helpers/AuthFunctions';
 import { primaryColor, facebookColor, googleColor } from '../../config/Constants/Colors';
+import Loader from '../../components/Loader/Loader';
 
 export default class Login extends Component {
     constructor(props) {
@@ -12,11 +13,18 @@ export default class Login extends Component {
             email: '',
             password: '',
             loginErr: false,
-            successLogin: false
+            successLogin: false,
+            submitting: false
         };
     }
+
     render() {
-        let { email, password, loginErr, successLogin } = this.state;
+        console.warn('props--->', this.props);
+
+        let { email, password, loginErr, successLogin, submitting } = this.state;
+        if (submitting) {
+            return <Loader color={primaryColor} />;
+        }
         return (
             <ScrollView>
                 <Block style={{ flex: 1, justifyContent: 'space-between' }}>
@@ -96,7 +104,17 @@ export default class Login extends Component {
                         <Text p style={{ fontSize: 13, color: 'grey', marginRight: 5 }}>
                             Dont have an account?
                         </Text>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Signup')}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.setState({
+                                    email: '',
+                                    password: '',
+                                    loginErr: false,
+                                    submitting: false,
+                                    successLogin: false
+                                });
+                                this.props.navigation.navigate('Signup');
+                            }}>
                             <Text p bold style={{ fontSize: 14, color: 'grey' }}>
                                 Sign up
                             </Text>
@@ -158,15 +176,19 @@ export default class Login extends Component {
     };
 
     handleLogin = async () => {
+        this.setState({
+            submitting: true
+        });
         const { email, password } = this.state;
         const res = await onLogin(email, password);
-        console.log('login res: ', res);
-        // console.warn(res);
+        // console.warn('login res: ', res);
         if (res) {
             this.props.navigation.navigate('Home');
         } else {
             this.setState({
-                loginErr: true
+                loginErr: true,
+
+                submitting: false
             });
         }
     };

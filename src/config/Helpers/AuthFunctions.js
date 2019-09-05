@@ -6,28 +6,16 @@ export const USER_TOKEN = 'UserAuthToken';
 export const USER_ID = 'UserID';
 
 export const onSignup = async (signupObj) => {
-    try {
-        let res = await axios({
-            method: 'post',
-            url: `${API}register`,
-            data: {
-                signupObj: signupObj
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (res.status === 200) {
-            await AsyncStorage.setItem(USER_TOKEN, res.data._id);
-            return true;
-        } else {
-            return false;
+    return await axios({
+        method: 'post',
+        url: `${API}register`,
+        data: {
+            signupObj: signupObj
+        },
+        headers: {
+            'Content-Type': 'application/json'
         }
-    } catch (error) {
-        console.warn('error: ', error);
-        return false;
-    }
+    });
 };
 
 export const onLogin = async (email, password) => {
