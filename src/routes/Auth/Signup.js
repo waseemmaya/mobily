@@ -32,10 +32,13 @@ export default class Signup extends Component {
                         style={{
                             flex: 1,
                             flexDirection: 'row',
-                            justifyContent: 'center',
-                            backgroundColor: primaryColor
+                            justifyContent: 'center'
+                            // backgroundColor: primaryColor
                         }}>
-                        <Image style={{ width: 150, height: 150 }} source={require('../../config/Assets/logo.png')} />
+                        <Image
+                            style={{ width: 180, height: 180, marginTop: 20 }}
+                            source={require('../../config/Assets/mobilylogo.png')}
+                        />
                     </Block>
 
                     <Block
@@ -148,13 +151,22 @@ export default class Signup extends Component {
         });
         let { email, password, firstName, phone, lastName, againPassword } = this.state;
 
+        // let signupObj = {
+        //     email,
+        //     password,
+        //     againPassword,
+        //     firstName,
+        //     lastName,
+        //     phone
+        // };
+
         let signupObj = {
-            email,
-            password,
-            againPassword,
-            firstName,
-            lastName,
-            phone
+            email: 'waseemmaya@gmail.com',
+            password: '123456',
+            againPassword: '123456',
+            firstName: 'Waseem',
+            lastName: 'Maya',
+            phone: '03123767311'
         };
 
         try {
@@ -165,7 +177,7 @@ export default class Signup extends Component {
                 submitting: false
             });
         } catch (error) {
-            console.warn('signup err: ', error);
+            alert(error);
             this.setState({
                 submitting: false
             });
@@ -178,7 +190,6 @@ export default class Signup extends Component {
         //     return false;
         // }
 
-        return;
-        return this.props.navigation.navigate(res ? 'Home' : 'Signup');
+        // return this.props.navigation.navigate('Login');
     };
 }

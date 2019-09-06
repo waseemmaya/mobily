@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StatusBar, AsyncStorage } from 'react-native';
+
 import { Root, Toast } from 'native-base';
 import Navigator from './src/Navigator';
 import AdContext from './src/contexts/AdContext';
@@ -160,9 +161,9 @@ function App(props) {
     };
 
     useEffect(() => {
-        getUser();
         getTotalAdsFromDB();
         latestFetch();
+        getUser();
         getToken();
     }, []);
 
@@ -196,7 +197,7 @@ function App(props) {
         <View style={{ flex: 1 }}>
             <Root>
                 <AdContext.Provider value={adState}>
-                    <StatusBar backgroundColor={primaryColor} barStyle='light-content' />
+                    <StatusBar animated={true} backgroundColor={primaryColor} barStyle='dark-content' />
                     <Navigator />
                 </AdContext.Provider>
             </Root>

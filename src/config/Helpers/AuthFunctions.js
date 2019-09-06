@@ -49,10 +49,16 @@ export const onLogin = async (email, password) => {
 };
 
 export const onLogout = async () => {
-    const logoutRes = await AsyncStorage.removeItem(USER_TOKEN);
-    const logoutRes2 = await AsyncStorage.removeItem(USER_ID);
-    // console.log('logoutRes: ', logoutRes);
-    // return log
+    try {
+        const logoutRes = await AsyncStorage.removeItem(USER_TOKEN);
+        const logoutRes2 = await AsyncStorage.removeItem(USER_ID);
+        console.log('logoutRes: ', logoutRes);
+        console.log('logoutRes2: ', logoutRes2);
+        return true;
+    } catch (error) {
+        console.log('error: ', error);
+        return false;
+    }
 };
 
 export const isLoggedin = async () => {

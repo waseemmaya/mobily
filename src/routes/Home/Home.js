@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { RefreshControl } from 'react-native';
+import { View, RefreshControl } from 'react-native';
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { Block } from 'galio-framework';
-import moment from 'moment';
 import RenderAd from './RenderAd';
 import NetworkError from '../../components/Error/NetworkError';
 import Loader from '../../components/Loader/Loader';
@@ -11,7 +10,6 @@ import { withAds } from '../../contexts/AdContext';
 import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
 import { width } from '../../config/Constants/Dimensions';
 import SearchEnabledPage from '../../components/SearchEnabledPage';
-import { Image, View, Caption, Text, Row, TouchableOpacity } from '@shoutem/ui';
 
 const ViewTypes = {
     HALF_LEFT: 1,

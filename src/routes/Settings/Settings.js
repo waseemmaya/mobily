@@ -14,9 +14,13 @@ export default class Settings extends Component {
         );
     }
 
-    handleLogout = () => {
-        const logoutRes = onLogout();
-        // this.props.navigation.navigate('ViewAd');
-        return this.props.navigation.navigate('Login');
+    handleLogout = async () => {
+        const logoutRes = await onLogout();
+
+        if (logoutRes) {
+            return this.props.navigation.navigate('Login');
+        } else {
+            alert('something went wrong');
+        }
     };
 }

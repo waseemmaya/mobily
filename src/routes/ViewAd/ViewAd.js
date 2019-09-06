@@ -1,17 +1,28 @@
 import React, { Component } from 'react';
 import { Block } from 'galio-framework';
-import { ScrollView, Button, Icon, Text, InlineGallery, Caption, Divider, Row, View, Subtitle } from '@shoutem/ui';
+import {
+    ScrollView,
+    RefreshControl,
+    Button,
+    Text,
+    InlineGallery,
+    Caption,
+    Divider,
+    Row,
+    View,
+    Subtitle
+} from '@shoutem/ui';
 import moment from 'moment';
 import ImagesViewer from './ImagesViewer';
 import { Linking } from 'react-native';
 import { viewIncrement } from '../../config/Helpers/getAds';
-import { primaryColor } from '../../config/Constants/Colors';
 
 export default class ViewAd extends Component {
     constructor(props) {
         super(props);
         this.state = {
             adObj: null,
+            refreshing: false,
             showModal: false
         };
     }
@@ -62,6 +73,13 @@ export default class ViewAd extends Component {
         );
     };
 
+    _onRefresh = () => {
+        this.setState({ refreshing: true });
+        setTimeout(() => {
+            this.setState({ refreshing: false });
+        }, 3000);
+    };
+
     render() {
         const { showModal } = this.state;
         const { ad } = this.props.navigation.state.params;
@@ -87,42 +105,40 @@ export default class ViewAd extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <ScrollView>
-                    <InlineGallery onPress={this.toggleModal} styleName='large-banner' data={arr} />
-                    <Block center>
-                        <Caption>Total {ad.adsImages.length} Images</Caption>
-                    </Block>
+                <InlineGallery onPress={this.toggleModal} styleName='large-banner' data={arr} />
+                <Block center>
+                    <Caption>Total {ad.adsImages.length} Images</Caption>
+                </Block>
 
-                    <Divider styleName='line' />
-                    <Row>
-                        <View styleName='vertical stretch space-between'>
-                            <Block center>
-                                <Subtitle style={{ fontSize: 22 }}>{ad.adTitle}</Subtitle>
-                            </Block>
-                            <Divider styleName='line' />
-                            <Caption>Ad Number : {ad.adNumber}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Price : {ad.price}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Posted : {moment(ad.postedAt).fromNow()}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Location : {ad.location}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Views : {ad.views}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Posted By : {ad.postedByName}</Caption>
-                            <Divider styleName='line' />
-                            <Caption>Desciption :</Caption>
-                            <Divider styleName='line' />
-                            <Caption>{ad.description}</Caption>
-                        </View>
-                    </Row>
-                    <Divider styleName='line' />
-                    <Block center>
-                        <Caption>{`---  Mobily  ---`}</Caption>
-                    </Block>
-                    {this.RenderBottom()}
-                </ScrollView>
+                <Divider styleName='line' />
+                <Row>
+                    <View styleName='vertical stretch space-between'>
+                        <Block center>
+                            <Subtitle style={{ fontSize: 22 }}>{ad.adTitle}</Subtitle>
+                        </Block>
+                        <Divider styleName='line' />
+                        <Caption>Ad Number : {ad.adNumber}</Caption>
+                        <Divider styleName='line' />
+                        <Caption>Price : {ad.price}</Caption>
+                        <Divider styleName='line' />
+                        <Caption>Posted : {moment(ad.postedAt).fromNow()}</Caption>
+                        <Divider styleName='line' />
+                        <Caption>Location : {ad.location}</Caption>
+                        <Divider styleName='line' />
+                        <Caption>Views : {ad.views}</Caption>
+                        <Divider styleName='line' />
+                        <Caption>Posted By : {ad.postedByName}</Caption>
+                        <Divider styleName='line' />
+                        <Caption>Desciption :</Caption>
+                        <Divider styleName='line' />
+                        <Caption>{ad.description}</Caption>
+                    </View>
+                </Row>
+                <Divider styleName='line' />
+                <Block center>
+                    <Caption>{`---  Mobily  ---`}</Caption>
+                </Block>
+                {this.RenderBottom()}
             </View>
         );
     }

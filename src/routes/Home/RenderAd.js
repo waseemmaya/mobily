@@ -13,6 +13,7 @@ import { withAds } from '../../contexts/AdContext';
 class RenderAd extends Component {
     toggleFavt = async (_id) => {
         const { getUser, user } = this.props.adState;
+        const { removeFromFavt } = this.props[0];
         if (!user) {
             return;
         }
@@ -40,6 +41,9 @@ class RenderAd extends Component {
 
             console.warn('res: ', res);
             getUser();
+            if (removeFromFavt) {
+                removeFromFavt(_id);
+            }
         } catch (error) {
             console.warn('error: ', error);
         }
@@ -48,8 +52,6 @@ class RenderAd extends Component {
         let { ad } = this.props[0];
         let { navigation } = this.props;
         const { user } = this.props.adState;
-
-        console.log('this.props: ', this.props);
 
         let isMatched = false;
 

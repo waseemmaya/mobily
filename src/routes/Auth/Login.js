@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, Button, Block } from 'galio-framework';
 import { StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Toast } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 import { onLogin } from '../../config/Helpers/AuthFunctions';
 import { primaryColor, facebookColor, googleColor } from '../../config/Constants/Colors';
@@ -19,8 +20,6 @@ export default class Login extends Component {
     }
 
     render() {
-        console.warn('props--->', this.props);
-
         let { email, password, loginErr, successLogin, submitting } = this.state;
         if (submitting) {
             return <Loader color={primaryColor} />;
@@ -77,18 +76,6 @@ export default class Login extends Component {
                             onPress={this.handleLogin}>
                             Login
                         </Button>
-                        {/* <Button
-              style={{
-                width: 100,
-                marginTop: 15,
-                backgroundColor: primaryColor,
-              }}
-              dark
-              mode="contained"
-              onPress={() => console.log('Pressed')}
-            >
-              Login
-            </Button> */}
                     </Block>
                     <Block style={{ flex: 1, marginTop: 30 }}>{this.renderAuthProvide()}</Block>
 
@@ -181,14 +168,18 @@ export default class Login extends Component {
         });
         const { email, password } = this.state;
         const res = await onLogin(email, password);
-        // console.warn('login res: ', res);
         if (res) {
             this.props.navigation.navigate('Home');
         } else {
             this.setState({
                 loginErr: true,
-
                 submitting: false
+            });
+            Toast.show({
+                text: 'Something went wrong!',
+                buttonText: 'Okay',
+                duration: 2000,
+                type: 'danger'
             });
         }
     };

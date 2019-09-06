@@ -6,24 +6,27 @@ import axios from 'axios';
 import { primaryColor } from '../../config/Constants/Colors';
 import Loader from '../../components/Loader/Loader';
 import API from '../../config/API/API';
-import Category2 from './Category2';
+import ImageResizer from 'react-native-image-resizer';
 
-export default class Category extends Component {
+export default class Category2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
             imagesArrays: [],
+            imagesArrays2: [],
             isUploading: false,
-            visible: false
+            resizedImages: [],
+            uri: ''
         };
     }
     render() {
-        return <Category2 />;
-        const { imagesArrays, isUploading, visible } = this.state;
+        const { imagesArrays, isUploading } = this.state;
+        console.log('Category2 State --> : ', this.state);
         return (
             <Block style={{ flex: 1 }}>
-                {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
-                <Block>{this.renderSearchBar()}</Block>
+                <Block style={{ height: 70, backgroundColor: primaryColor }}>
+                    <Text> Category </Text>
+                </Block>
                 {isUploading && <Loader color={primaryColor} />}
                 {!isUploading && (
                     <Block>
@@ -40,7 +43,7 @@ export default class Category extends Component {
                                 width: 100,
                                 marginTop: 15
                             }}
-                            onPress={this.uploadImages}>
+                            onPress={this.resizeAndUpload}>
                             Upload
                         </Button>
                         <Block>
@@ -55,7 +58,7 @@ export default class Category extends Component {
                                                     width: 150,
                                                     height: 150
                                                 }}
-                                                source={{ uri: val.path }}
+                                                source={{ uri: this.state.uri }}
                                             />
                                         );
                                     })}
@@ -63,39 +66,42 @@ export default class Category extends Component {
                         </Block>
                     </Block>
                 )}
-                {/* {visible &&  <Snackbar duration={4000}
-          visible={this.state.visible}
-          action={{
-            label: 'X',
-            onPress: () => {
-              this.setState({ visible: false })
-            },
-          }}
-          onDismiss={() => this.setState({ visible: false })}
-        >
-          Uploaded
-        </Snackbar>} */}
             </Block>
         );
     }
 
-    renderSearchBar = () => {
-        return (
-            <Block style={{ height: 70, backgroundColor: primaryColor }}>
-                <Text> Category </Text>
-            </Block>
+    resizeAndUpload = async () => {
+        const { imagesArrays } = this.state;
+        if (imagesArrays.length === 0) {
+            console.log('No image selected');
+            return;
+        }
+
+        let newImages = await Promise.all(
+            imagesArrays.map(async (origImg, i) => {
+                console.log('origImg: ', origImg);
+                let img = await ImageResizer.createResizedImage(origImg.path, 1000, origImg.height, 'JPEG', 80);
+                img.mime = origImg.mime;
+                img.height = origImg.height;
+                img.modificationDate = origImg.modificationDate;
+                console.log('img: ', img);
+                return img;
+            })
         );
+
+        console.log('newImages: ', newImages);
+        this.setState({
+            imagesArrays2: newImages
+        });
+        await this.uploadImages();
     };
 
     selectImage = async () => {
-        // let ads = await axios.get(adsAPI);
-        // console.log('ads: ', ads);
         try {
             let imagesArrays = await ImagePicker.openPicker({
                 mediaType: 'photo',
                 multiple: true
             });
-            console.log('imagesArrays: ', imagesArrays);
             this.setState({
                 imagesArrays: imagesArrays
             });
@@ -105,8 +111,8 @@ export default class Category extends Component {
     };
 
     uploadImages = async () => {
-        const { imagesArrays } = this.state;
-        if (imagesArrays.length === 0) {
+        const { imagesArrays2 } = this.state;
+        if (imagesArrays2.length === 0) {
             console.log('No image selected');
             return;
         }
@@ -115,11 +121,11 @@ export default class Category extends Component {
         });
 
         let data = new FormData();
-        for (let i = 0; i < imagesArrays.length; i++) {
+        for (let i = 0; i < imagesArrays2.length; i++) {
             var photo = {
-                uri: imagesArrays[i].path,
-                type: imagesArrays[i].mime,
-                name: `${imagesArrays[i].modificationDate}`
+                uri: imagesArrays2[i].uri,
+                type: imagesArrays2[i].mime,
+                name: `${imagesArrays2[i].modificationDate}`
             };
             data.append('imagesArr', photo, photo.name);
             data.append('title', 'A beautiful photo!');
@@ -136,7 +142,7 @@ export default class Category extends Component {
             this.setState({
                 visible: true,
                 isUploading: false,
-                imagesArrays: []
+                imagesArrays2: []
             });
         } catch (error) {
             this.setState({
