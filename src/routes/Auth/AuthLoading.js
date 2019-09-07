@@ -1,20 +1,19 @@
 import React from 'react';
-import { StatusBar, View } from 'react-native';
-import { Spinner } from 'native-base';
 // import firebase from 'react-native-firebase';
 import { isLoggedin } from '../../config/Helpers/AuthFunctions';
-import { primaryColor } from '../../config/Constants/Colors';
 import {
     requestCameraPermission,
     requestGalleryPermission,
     checkFirebasePermission
 } from '../../config/Helpers/androidPermissions';
 import Loader from '../../components/Loader/Loader';
-import {} from '../../config/Helpers/androidPermissions';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export default class AuthLoading extends React.Component {
     render() {
-        return <Loader color={primaryColor} />;
+        let colorContext = this.context;
+        let { color } = colorContext;
+        return <Loader color={color} />;
     }
 
     componentDidMount = async () => {
@@ -45,3 +44,5 @@ export default class AuthLoading extends React.Component {
         // };
     };
 }
+
+AuthLoading.contextType = ThemeContext;

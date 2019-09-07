@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Icon } from 'native-base';
 import { Block, Input, Text } from 'galio-framework';
 import { TouchableOpacity, Keyboard } from 'react-native';
-import { primaryColor, grayColor } from '../../config/Constants/Colors';
+import { grayColor } from '../../config/Constants/Colors';
 import { width } from '../../config/Constants/Dimensions';
 import { withAds } from '../../contexts/AdContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 RenderSearchBar = (props) => {
+    const themeContext = useContext(ThemeContext);
+    const { color } = themeContext;
     const {
         adsArr,
         totalAds,
@@ -32,7 +35,7 @@ RenderSearchBar = (props) => {
     }, []);
 
     return (
-        <Block style={{ height: 110, backgroundColor: primaryColor }}>
+        <Block style={{ height: 110, backgroundColor: color }}>
             {/* {searchEnabled && (
                 <TouchableOpacity onPress={disableSearch} styleName='flexible'>
                     <Icon style={{ fontSize: 28, color: grayColor }} name='ios-close' type='Ionicons' />

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StatusBar, AsyncStorage } from 'react-native';
 
 import { Root, Toast } from 'native-base';
 import Navigator from './src/Navigator';
 import AdContext from './src/contexts/AdContext';
 import { getLatestAds, fetchMoreAds, searchAds, getTotalAds, searchMoreAds } from './src/config/Helpers/getAds';
-import { primaryColor } from './src/config/Constants/Colors';
 import firebase from 'react-native-firebase';
 import { getUserID } from './src/config/Helpers/AuthFunctions';
 import { getCurrentUser } from './src/config/Helpers/AuthFunctions';
+import { ThemeContext } from './src/contexts/ThemeContext';
 
 function App(props) {
     const [ adsArr, setadsArr ] = useState([]);
@@ -193,11 +193,14 @@ function App(props) {
         getUser: getUser
     };
 
+    const themeContext = useContext(ThemeContext);
+    const { color } = themeContext;
+
     return (
         <View style={{ flex: 1 }}>
             <Root>
                 <AdContext.Provider value={adState}>
-                    <StatusBar animated={true} backgroundColor={primaryColor} barStyle='dark-content' />
+                    <StatusBar hidden={false} animated={true} backgroundColor={color} barStyle='dark-content' />
                     <Navigator />
                 </AdContext.Provider>
             </Root>

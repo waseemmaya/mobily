@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Block, Text } from 'galio-framework';
 import { StatusBar } from 'react-native';
-import { primaryColor, whiteColor, grayColor } from '../../config/Constants/Colors';
 import { TextField } from 'react-native-material-textfield';
 import { Item, Picker, Icon } from 'native-base';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export default class Add extends Component {
     constructor(props) {
@@ -14,10 +14,12 @@ export default class Add extends Component {
         };
     }
     render() {
+        let colorContext = this.context;
+        let { color } = colorContext;
+        console.warn('-1-color: ', color);
         return (
             <Block>
-                {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
-                <Block middle style={{ height: 50, backgroundColor: primaryColor }}>
+                <Block middle style={{ height: 50, backgroundColor: color }}>
                     <Text h5 color={whiteColor}>
                         Post your Ad
                     </Text>
@@ -93,3 +95,5 @@ export default class Add extends Component {
         );
     };
 }
+
+Add.contextType = ThemeContext;

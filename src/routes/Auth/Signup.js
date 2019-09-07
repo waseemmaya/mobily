@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Text, Button, Block } from 'galio-framework';
 import { StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
-import { primaryColor } from '../../config/Constants/Colors';
+
 import { onSignup } from '../../config/Helpers/AuthFunctions';
 import Loader from '../../components/Loader/Loader';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export default class Signup extends Component {
     constructor(props) {
@@ -21,9 +22,10 @@ export default class Signup extends Component {
     }
     render() {
         let { email, password, firstName, phone, lastName, againPassword, submitting } = this.state;
-
+        const colorContext = this.context;
+        const { color } = colorContext;
         if (submitting) {
-            return <Loader color={primaryColor} />;
+            return <Loader color={color} />;
         }
         return (
             <ScrollView>
@@ -33,7 +35,7 @@ export default class Signup extends Component {
                             flex: 1,
                             flexDirection: 'row',
                             justifyContent: 'center'
-                            // backgroundColor: primaryColor
+                            // backgroundColor: color
                         }}>
                         <Image
                             style={{ width: 180, height: 180, marginTop: 20 }}
@@ -115,7 +117,7 @@ export default class Signup extends Component {
                             style={{
                                 width: 100,
                                 marginTop: 15,
-                                backgroundColor: primaryColor
+                                backgroundColor: color
                             }}
                             onPress={this.handleSignup}>
                             Sign up
@@ -161,7 +163,7 @@ export default class Signup extends Component {
         // };
 
         let signupObj = {
-            email: 'waseemmaya@gmail.com',
+            email: 'waseemmayaa@gmail.com',
             password: '123456',
             againPassword: '123456',
             firstName: 'Waseem',
@@ -193,3 +195,5 @@ export default class Signup extends Component {
         // return this.props.navigation.navigate('Login');
     };
 }
+
+Signup.contextType = ThemeContext;

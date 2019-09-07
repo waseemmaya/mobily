@@ -1,19 +1,26 @@
 import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation';
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, AsyncStorage } from 'react-native';
 import Messages from '../routes/Messages/Messages';
 import Home from '../routes/Home/Home';
 import Ads from '../routes/Ads/Ads';
 import Settings from '../routes/Settings/Settings';
 import ViewAd from '../routes/ViewAd/ViewAd';
 import Category from '../routes/Category/Category';
-import { primaryColor } from '../config/Constants/Colors';
-
 import HomeIcon from '../config/Assets/TabNavigatorIcons/Home.png';
 import AdsIcon from '../config/Assets/TabNavigatorIcons/Ads.png';
 import ProfileIcon from '../config/Assets/TabNavigatorIcons/Profile.png';
 import MessagesIcon from '../config/Assets/TabNavigatorIcons/Messages.png';
 import CategoryIcon from '../config/Assets/TabNavigatorIcons/Category.png';
+
+async function getColor() {
+    let color = await AsyncStorage.getItem('color');
+    if (!color) {
+        return '#3A5999';
+    } else {
+        return color;
+    }
+}
 
 // Category Tab and its stack childs
 const CategoryStack = createStackNavigator(
@@ -124,7 +131,7 @@ const TabNavigator = createAppContainer(
             swipeEnabled: true,
             tabBarOptions: {
                 activeTintColor: 'white',
-                activeBackgroundColor: primaryColor,
+                activeBackgroundColor: getColor(),
                 inactiveTintColor: '#666',
                 tabStyle: {
                     fontSize: 12,

@@ -4,8 +4,9 @@ import { StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Toast } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 import { onLogin } from '../../config/Helpers/AuthFunctions';
-import { primaryColor, facebookColor, googleColor } from '../../config/Constants/Colors';
+import { facebookColor, googleColor } from '../../config/Constants/Colors';
 import Loader from '../../components/Loader/Loader';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export default class Login extends Component {
     constructor(props) {
@@ -20,20 +21,20 @@ export default class Login extends Component {
     }
 
     render() {
+        const colorContext = this.context;
+        const { color } = colorContext;
         let { email, password, loginErr, successLogin, submitting } = this.state;
         if (submitting) {
-            return <Loader color={primaryColor} />;
+            return <Loader color={color} />;
         }
         return (
             <ScrollView>
                 <Block style={{ flex: 1, justifyContent: 'space-between' }}>
-                    {/* <StatusBar backgroundColor={primaryColor} barStyle='light-content' /> */}
                     <Block
                         style={{
                             flex: 1,
                             flexDirection: 'row',
                             justifyContent: 'center'
-                            // backgroundColor: primaryColor
                         }}>
                         <Image
                             style={{ width: 180, height: 180, marginTop: 20 }}
@@ -71,7 +72,7 @@ export default class Login extends Component {
                             style={{
                                 width: 100,
                                 marginTop: 15,
-                                backgroundColor: primaryColor
+                                backgroundColor: color
                             }}
                             onPress={this.handleLogin}>
                             Login
@@ -184,3 +185,5 @@ export default class Login extends Component {
         }
     };
 }
+
+Login.contextType = ThemeContext;

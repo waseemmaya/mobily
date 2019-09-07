@@ -38,6 +38,7 @@ export const onLogin = async (email, password) => {
             const { token, userID } = res.data;
             await AsyncStorage.setItem(USER_TOKEN, token);
             await AsyncStorage.setItem(USER_ID, userID);
+
             return true;
         } else {
             return false;

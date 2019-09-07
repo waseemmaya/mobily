@@ -5,11 +5,11 @@ import { Block } from 'galio-framework';
 import RenderAd from './RenderAd';
 import NetworkError from '../../components/Error/NetworkError';
 import Loader from '../../components/Loader/Loader';
-import { primaryColor } from '../../config/Constants/Colors';
 import { withAds } from '../../contexts/AdContext';
 import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
 import { width } from '../../config/Constants/Dimensions';
 import SearchEnabledPage from '../../components/SearchEnabledPage';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const ViewTypes = {
     HALF_LEFT: 1,
@@ -48,6 +48,11 @@ class Home extends Component {
         );
     }
 
+    componentDidMount() {
+        const { getUser } = this.props.adState;
+        getUser();
+    }
+
     renderMainScreen = () => {
         const {
             user,
@@ -60,6 +65,8 @@ class Home extends Component {
             searchEnabled,
             isFetching
         } = this.props.adState;
+        const colorContext = this.context;
+        const { color } = colorContext;
 
         if (searchEnabled) {
             return <SearchEnabledPage />;
@@ -70,7 +77,7 @@ class Home extends Component {
         }
 
         if (adsArr.length < 1) {
-            return <Loader color={primaryColor} />;
+            return <Loader color={color} />;
         }
 
         let dataProvider = new DataProvider((r1, r2) => {
@@ -106,9 +113,11 @@ class Home extends Component {
 
     renderFooter = () => {
         const { isFetching } = this.props.adState;
+        const colorContext = this.context;
+        const { color } = colorContext;
         //Second view makes sure we don't unnecessarily change height of the list on this event. That might cause indicator to remain invisible
         //The empty view can be removed once you've fetched all the data
-        return isFetching ? <Loader style={{ margin: 30 }} color={primaryColor} /> : <View style={{ height: 60 }} />;
+        return isFetching ? <Loader style={{ margin: 30 }} color={color} /> : <View style={{ height: 60 }} />;
     };
 
     renderMore = () => {
@@ -134,4 +143,5 @@ class Home extends Component {
     };
 }
 
+Home.contextType = ThemeContext;
 export default withAds(Home);

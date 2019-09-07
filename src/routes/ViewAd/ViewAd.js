@@ -14,7 +14,7 @@ import {
 } from '@shoutem/ui';
 import moment from 'moment';
 import ImagesViewer from './ImagesViewer';
-import { Linking } from 'react-native';
+import { Linking, StatusBar } from 'react-native';
 import { viewIncrement } from '../../config/Helpers/getAds';
 
 export default class ViewAd extends Component {
@@ -104,42 +104,46 @@ export default class ViewAd extends Component {
         }
 
         return (
-            <View style={{ flex: 1 }}>
-                <InlineGallery onPress={this.toggleModal} styleName='large-banner' data={arr} />
-                <Block center>
-                    <Caption>Total {ad.adsImages.length} Images</Caption>
-                </Block>
+            <ScrollView>
+                <View style={{ flex: 1 }}>
+                    <StatusBar hidden={true} animated={true} barStyle='dark-content' />
 
-                <Divider styleName='line' />
-                <Row>
-                    <View styleName='vertical stretch space-between'>
-                        <Block center>
-                            <Subtitle style={{ fontSize: 22 }}>{ad.adTitle}</Subtitle>
-                        </Block>
-                        <Divider styleName='line' />
-                        <Caption>Ad Number : {ad.adNumber}</Caption>
-                        <Divider styleName='line' />
-                        <Caption>Price : {ad.price}</Caption>
-                        <Divider styleName='line' />
-                        <Caption>Posted : {moment(ad.postedAt).fromNow()}</Caption>
-                        <Divider styleName='line' />
-                        <Caption>Location : {ad.location}</Caption>
-                        <Divider styleName='line' />
-                        <Caption>Views : {ad.views}</Caption>
-                        <Divider styleName='line' />
-                        <Caption>Posted By : {ad.postedByName}</Caption>
-                        <Divider styleName='line' />
-                        <Caption>Desciption :</Caption>
-                        <Divider styleName='line' />
-                        <Caption>{ad.description}</Caption>
-                    </View>
-                </Row>
-                <Divider styleName='line' />
-                <Block center>
-                    <Caption>{`---  Mobily  ---`}</Caption>
-                </Block>
-                {this.RenderBottom()}
-            </View>
+                    <InlineGallery onPress={this.toggleModal} styleName='large-banner' data={arr} />
+                    <Block center>
+                        <Caption>Total {ad.adsImages.length} Images</Caption>
+                    </Block>
+
+                    <Divider styleName='line' />
+                    <Row>
+                        <View styleName='vertical stretch space-between'>
+                            <Block center>
+                                <Subtitle style={{ fontSize: 22 }}>{ad.adTitle}</Subtitle>
+                            </Block>
+                            <Divider styleName='line' />
+                            <Caption>Ad Number : {ad.adNumber}</Caption>
+                            <Divider styleName='line' />
+                            <Caption>Price : {ad.price}</Caption>
+                            <Divider styleName='line' />
+                            <Caption>Posted : {moment(ad.postedAt).fromNow()}</Caption>
+                            <Divider styleName='line' />
+                            <Caption>Location : {ad.location}</Caption>
+                            <Divider styleName='line' />
+                            <Caption>Views : {ad.views}</Caption>
+                            <Divider styleName='line' />
+                            <Caption>Posted By : {ad.postedByName}</Caption>
+                            <Divider styleName='line' />
+                            <Caption>Desciption :</Caption>
+                            <Divider styleName='line' />
+                            <Caption>{ad.description}</Caption>
+                        </View>
+                    </Row>
+                    <Divider styleName='line' />
+                    <Block center>
+                        <Caption>{`---  Mobily  ---`}</Caption>
+                    </Block>
+                    {this.RenderBottom()}
+                </View>
+            </ScrollView>
         );
     }
 }

@@ -2,10 +2,10 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { getFavtAds } from '../../config/Helpers/getAds';
 import Loader from '../../components/Loader/Loader';
-import { primaryColor } from '../../config/Constants/Colors';
 import NetworkError from '../../components/Error/NetworkError';
 import { Block, Text } from 'galio-framework';
 import RenderAd from '../Home/RenderAd';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 class Ads extends React.Component {
     constructor(props) {
@@ -35,9 +35,11 @@ class Ads extends React.Component {
         });
     };
     render() {
+        let colorContext = this.context;
+        let { color } = colorContext;
         return (
             <Block style={{ flex: 1 }}>
-                <Block style={{ height: 60, backgroundColor: primaryColor }}>
+                <Block style={{ height: 60, backgroundColor: color }}>
                     <Block center>
                         <Text style={{ fontSize: 20, color: 'white', marginTop: 20 }}>Favourite Ads</Text>
                     </Block>
@@ -49,8 +51,11 @@ class Ads extends React.Component {
 
     MainAdRednder = () => {
         const { favtAds } = this.state;
+        let colorContext = this.context;
+        let { color } = colorContext;
+        console.warn('-2-color: ', color);
         if (favtAds === null) {
-            return <Loader color={primaryColor} />;
+            return <Loader color={color} />;
         }
         if (favtAds.length === 0) {
             return <NetworkError message={'You have not added any ad in favorite.'} iconName='magnify-close' />;
@@ -66,4 +71,5 @@ class Ads extends React.Component {
     };
 }
 
+Ads.contextType = ThemeContext;
 export default Ads;

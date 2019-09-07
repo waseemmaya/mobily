@@ -6,7 +6,6 @@ export default function ImagesViewer(props) {
     return (
         <Modal visible={props.showModal} transparent={true} onRequestClose={props.hideModal} enableImageZoom>
             <ImageViewer
-                // loadingRender={() => <DotIndicator color={primaryColor} size={10} />}
                 imageUrls={props.modalArr}
                 index={0}
                 onSwipeDown={() => {
