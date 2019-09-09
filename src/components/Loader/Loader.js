@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Block } from 'galio-framework';
 import { Spinner } from 'native-base';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export default function Loader(props) {
+    const themeContext = useContext(ThemeContext);
+    const { color } = themeContext;
     return (
         <Block
             style={{
@@ -10,7 +13,7 @@ export default function Loader(props) {
                 flexDirection: 'column',
                 justifyContent: 'center'
             }}>
-            <Spinner color={props.color} />
+            <Spinner color={color} />
         </Block>
     );
 }

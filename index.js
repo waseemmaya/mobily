@@ -15,3 +15,15 @@ function Main() {
 }
 
 AppRegistry.registerComponent(appName, () => Main);
+
+// getToken = async () => {
+//     let fcmToken = await AsyncStorage.getItem('fcmToken');
+//     // console.warn('before fcmToken: ', fcmToken);
+//     if (!fcmToken) {
+//         fcmToken = await firebase.messaging().getToken();
+//         if (fcmToken) {
+//             console.warn('after fcmToken: ', fcmToken);
+//             await AsyncStorage.setItem('fcmToken', fcmToken);
+//         }
+//     }
+// };

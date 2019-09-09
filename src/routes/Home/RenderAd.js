@@ -1,28 +1,37 @@
-import React, { Component } from 'react';
+import React, { useContext } from 'react';
 import { withNavigation } from 'react-navigation';
 import { TouchableOpacity } from 'react-native';
 import { Image, View, Text, Caption, Row } from '@shoutem/ui';
 import moment from 'moment';
-import { Icon } from 'native-base';
+import { Icon, Toast } from 'native-base';
 import axios from 'axios';
-import { grayColor } from '../../config/Constants/Colors';
 import API from '../../config/API/API';
 import { getUserID } from '../../config/Helpers/AuthFunctions';
-import { withAds } from '../../contexts/AdContext';
+import { AdContext } from '../../contexts/AdContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
+
 // removefromfavt
-class RenderAd extends Component {
+
+function RenderAd(props) {
+    const { ad, removeFromFavt, navigation } = props;
+    let adContext = useContext(AdContext);
+    const { getUser, user } = adContext;
+
+    const themeContext = useContext(ThemeContext);
+    const { color } = themeContext;
+
     toggleFavt = async (_id) => {
-        const { getUser, user } = this.props.adState;
-        const { removeFromFavt } = this.props[0];
         if (!user) {
             return;
         }
         let { favtAds } = user;
 
         let url = `${API}ads/addtofavt`;
+        let msg = `Added to`;
         for (let i = 0; i < favtAds.length; i++) {
             if (favtAds[i] === _id) {
                 url = `${API}ads/removefromfavt`;
+                msg = `Removed from`;
             }
         }
         try {
@@ -39,7 +48,10 @@ class RenderAd extends Component {
                 }
             });
 
-            console.warn('res: ', res);
+            Toast.show({
+                text: `${msg} Favorite.!`,
+                duration: 700
+            });
             getUser();
             if (removeFromFavt) {
                 removeFromFavt(_id);
@@ -48,44 +60,38 @@ class RenderAd extends Component {
             console.warn('error: ', error);
         }
     };
-    render() {
-        let { ad } = this.props[0];
-        let { navigation } = this.props;
-        const { user } = this.props.adState;
 
-        let isMatched = false;
+    let isMatched = false;
+    user &&
+        user.favtAds &&
+        user.favtAds.map((id) => {
+            if (JSON.stringify(id) === JSON.stringify(ad._id)) {
+                isMatched = true;
+            }
+        });
+    let iconName = !isMatched ? 'ios-heart-empty' : 'ios-heart';
 
-        user &&
-            user.favtAds &&
-            user.favtAds.map((id) => {
-                if (JSON.stringify(id) === JSON.stringify(ad._id)) {
-                    isMatched = true;
-                }
-            });
-        let iconName = !isMatched ? 'ios-heart-empty' : 'ios-heart';
-
-        return (
-            <View key={`${ad._id}${ad.adNumber}`}>
-                <Row>
-                    <TouchableOpacity onPress={() => navigation.navigate('ViewAd', { ad: ad })} styleName='flexible'>
-                        <Image styleName='medium rounded-corners' source={{ uri: ad.adsImages[0].thumb }} />
-                    </TouchableOpacity>
-                    <View styleName='vertical stretch space-between'>
-                        <Text>
-                            {ad.adNumber} - {ad.adTitle}
-                        </Text>
-                        <View styleName='horizontal space-between'>
-                            <Caption>{moment(ad.postedAt).fromNow()}</Caption>
-                            <Caption>Rs {ad.price}</Caption>
-                            <TouchableOpacity onPress={() => this.toggleFavt(ad._id)}>
-                                <Icon style={{ fontSize: 21, color: grayColor }} name={iconName} type='Ionicons' />
-                            </TouchableOpacity>
-                        </View>
+    return (
+        <View key={`${ad._id}${ad.adNumber}`}>
+            <Row>
+                <TouchableOpacity onPress={() => navigation.navigate('ViewAd', { ad: ad })} styleName='flexible'>
+                    <Image styleName='medium rounded-corners' source={{ uri: ad.adsImages[0].thumb }} />
+                </TouchableOpacity>
+                <View styleName='vertical stretch space-between'>
+                    <Text>
+                        {ad.adNumber} - {ad.adTitle}
+                    </Text>
+                    <View styleName='horizontal space-between'>
+                        <Caption>{moment(ad.postedAt).fromNow()}</Caption>
+                        <Caption>Rs {ad.price}</Caption>
+                        <TouchableOpacity onPress={() => toggleFavt(ad._id)}>
+                            <Icon style={{ fontSize: 21, color: color }} name={iconName} type='Ionicons' />
+                        </TouchableOpacity>
                     </View>
-                </Row>
-            </View>
-        );
-    }
+                </View>
+            </Row>
+        </View>
+    );
 }
 
-export default withAds(withNavigation(RenderAd));
+export default withNavigation(RenderAd);

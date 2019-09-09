@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Text, Button, Block } from 'galio-framework';
-import { StatusBar, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Image, ScrollView, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Toast } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
 import { onLogin } from '../../config/Helpers/AuthFunctions';
-import { facebookColor, googleColor } from '../../config/Constants/Colors';
 import Loader from '../../components/Loader/Loader';
 import { ThemeContext } from '../../contexts/ThemeContext';
+
+const USER_TOKEN = 'UserAuthToken';
+const USER_ID = 'UserID';
 
 export default class Login extends Component {
     constructor(props) {
@@ -14,8 +16,6 @@ export default class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            loginErr: false,
-            successLogin: false,
             submitting: false
         };
     }
@@ -23,7 +23,7 @@ export default class Login extends Component {
     render() {
         const colorContext = this.context;
         const { color } = colorContext;
-        let { email, password, loginErr, successLogin, submitting } = this.state;
+        let { email, password, submitting } = this.state;
         if (submitting) {
             return <Loader color={color} />;
         }
@@ -78,7 +78,6 @@ export default class Login extends Component {
                             Login
                         </Button>
                     </Block>
-                    <Block style={{ flex: 1, marginTop: 30 }}>{this.renderAuthProvide()}</Block>
 
                     <Block
                         style={{
@@ -108,79 +107,45 @@ export default class Login extends Component {
                             </Text>
                         </TouchableOpacity>
                     </Block>
-                    <Block bottom style={{ marginTop: 70 }}>
-                        {/* <Snackbar
-              visible={loginErr}
-              onDismiss={() => this.setState({ loginErr: false })}
-              action={{
-                label: 'X',
-                onPress: () => {
-                  this.setState({
-                    loginErr: false,
-                  });
-                },
-              }}
-            >
-              {"User doesn't exist."}
-            </Snackbar> */}
-                    </Block>
+                    <Block bottom style={{ marginTop: 70 }} />
                 </Block>
             </ScrollView>
         );
     }
 
-    renderAuthProvide = () => {
-        let data = [ { name: 'Facebook', color: facebookColor }, { name: 'Google', color: googleColor } ];
-        return data.map((val, index) => {
-            return (
-                <TouchableOpacity key={index} style={{}}>
-                    <Text p style={{ fontSize: 13, color: 'grey', marginRight: 5 }}>
-                        {val.name}
-                    </Text>
-                    {/* <List.Item
-            titleStyle={{ color: 'white' }}
-            style={{
-              borderRadius: 6,
-              backgroundColor: val.color,
-              marginTop: 10,
-              marginLeft: 15,
-              marginRight: 15,
-            }}
-            title={`Login With ${val.name}`}
-            left={props => (
-              <Image
-                style={{ width: 40, height: 40 }}
-                source={
-                  val.name === 'Facebook'
-                    ? require('../../Assets/fb.png')
-                    : require('../../Assets/google.png')
-                }
-              />
-            )}
-          /> */}
-                </TouchableOpacity>
-            );
-        });
-    };
-
     handleLogin = async () => {
-        this.setState({
-            submitting: true
-        });
         const { email, password } = this.state;
-        const res = await onLogin(email, password);
-        if (res) {
-            this.props.navigation.navigate('Home');
-        } else {
-            this.setState({
-                loginErr: true,
-                submitting: false
-            });
+        if (!email || !password) {
             Toast.show({
-                text: 'Something went wrong!',
+                text: 'Empty Fields.',
                 buttonText: 'Okay',
                 duration: 2000,
                 type: 'danger'
+            });
+            return;
+        }
+        this.setState({
+            submitting: true
+        });
+        try {
+            const res = await onLogin(email, password);
+            const { token, userID } = res.data;
+            await AsyncStorage.setItem(USER_TOKEN, token);
+            await AsyncStorage.setItem(USER_ID, userID);
+            this.setState({
+                submitting: false
+            });
+            this.props.navigation.navigate('Home');
+        } catch (error) {
+            Toast.show({
+                text: error.response.data,
+                buttonText: 'Okay',
+                duration: 2000,
+                type: 'danger'
+            });
+            this.setState({
+                loginErr: true,
+                submitting: false
             });
         }
     };

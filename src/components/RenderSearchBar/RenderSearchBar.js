@@ -4,52 +4,32 @@ import { Block, Input, Text } from 'galio-framework';
 import { TouchableOpacity, Keyboard } from 'react-native';
 import { grayColor } from '../../config/Constants/Colors';
 import { width } from '../../config/Constants/Dimensions';
-import { withAds } from '../../contexts/AdContext';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import { AdContext } from '../../contexts/AdContext';
 
 RenderSearchBar = (props) => {
     const themeContext = useContext(ThemeContext);
     const { color } = themeContext;
-    const {
-        adsArr,
-        totalAds,
-        totalQueryAds,
-        isFetching,
-        search,
-        handleSearchQuery,
-        cancelSearch,
-        searchQuery,
-        enableSearch,
-        disableSearch,
-        searchEnabled
-    } = props.adState;
+    const adContext = useContext(AdContext);
+    const { adsArr, totalAds } = adContext;
 
-    forceLoseFocus = () => {
-        if (!searchQuery) {
-            disableSearch();
-            console.warn('hide');
-        }
+    keyboardHide = () => {
+        console.warn('hide');
     };
     useEffect(() => {
-        Keyboard.addListener('keyboardDidHide', forceLoseFocus);
+        Keyboard.addListener('keyboardDidHide', keyboardHide);
     }, []);
 
     return (
         <Block style={{ height: 110, backgroundColor: color }}>
-            {/* {searchEnabled && (
-                <TouchableOpacity onPress={disableSearch} styleName='flexible'>
-                    <Icon style={{ fontSize: 28, color: grayColor }} name='ios-close' type='Ionicons' />
-                </TouchableOpacity>
-            )} */}
             <Input
-                onFocus={enableSearch}
+                // onFocus={enableSearch}
                 // onBlur={disableSearch}
-                value={searchQuery}
-                onChangeText={(e) => handleSearchQuery(e)}
+                // value={searchQuery}
                 placeholder='Search...'
                 borderless
                 placeholderTextColor={grayColor}
-                onSubmitEditing={search}
+                // onSubmitEditing={search}
                 style={{
                     borderRadius: 1,
                     height: 38,
@@ -59,17 +39,14 @@ RenderSearchBar = (props) => {
                 }}
                 right
                 iconContent={
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (searchQuery.length > 0) {
-                                cancelSearch();
-                                disableSearch();
-                            }
-                        }}
-                        styleName='flexible'>
+                    <TouchableOpacity //         cancelSearch(); //     if (searchQuery.length > 0) { // onPress={() => {
+                    //         disableSearch();
+                    //     }
+                    // }}
+                    styleName='flexible'>
                         <Icon
-                            style={{ fontSize: searchQuery.length > 0 ? 28 : 21, color: grayColor }}
-                            name={searchQuery.length > 0 ? 'ios-close' : 'ios-search'}
+                            style={{ fontSize: 28, color: grayColor }}
+                            name={false ? 'ios-close' : 'ios-search'}
                             type='Ionicons'
                         />
                     </TouchableOpacity>
@@ -79,15 +56,9 @@ RenderSearchBar = (props) => {
                 <Text style={{ fontSize: 11, color: 'white' }}>
                     DB : {totalAds} - State : {adsArr.length}
                 </Text>
-
-                <Text style={{ fontSize: 11, color: 'white' }}>
-                    Total {totalQueryAds && totalQueryAds} ads found for {searchQuery && searchQuery}
-                </Text>
-
-                <Text style={{ fontSize: 11, color: 'white' }}>{isFetching && 'Fetching more.....'}</Text>
             </Block>
         </Block>
     );
 };
 
-export default withAds(RenderSearchBar);
+export default RenderSearchBar;

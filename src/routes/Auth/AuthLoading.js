@@ -1,5 +1,4 @@
 import React from 'react';
-// import firebase from 'react-native-firebase';
 import { isLoggedin } from '../../config/Helpers/AuthFunctions';
 import {
     requestCameraPermission,
@@ -20,28 +19,12 @@ export default class AuthLoading extends React.Component {
         let camPerm = await requestGalleryPermission();
         let camPerm2 = await requestCameraPermission();
         let messagePermision = await checkFirebasePermission();
+        let { navigate } = this.props.navigation;
 
-        // this.props.navigation.navigate('Home');
         const res = await isLoggedin();
-        console.log('resislogged in: ', res);
+        console.log('isLoggedin ---> : ', res);
 
-        this.props.navigation.navigate(res ? 'Home' : 'Login');
-
-        // if (res) {
-
-        // }
-
-        //   console.log('firebase: ', firebase);
-        //   firebase
-        //     .auth()
-        //     .signInAnonymously()
-        //     .then(user => {
-        //       console.log('Firebase user: ', user);
-        //     })
-        //     .catch(err => {
-        //       console.log('err: ', err);
-        //     });
-        // };
+        navigate(res ? 'Home' : 'Login');
     };
 }
 

@@ -18,35 +18,20 @@ export const onSignup = async (signupObj) => {
     });
 };
 
-export const onLogin = async (email, password) => {
-    let loginObj = {
-        email,
-        password
-    };
-    try {
-        let res = await axios({
-            method: 'post',
-            url: `${API}login`,
-            data: {
-                loginObj: loginObj
-            },
-            headers: {
-                'Content-Type': 'application/json'
+export const onLogin = (email, password) => {
+    return axios({
+        method: 'post',
+        url: `${API}login`,
+        data: {
+            loginObj: {
+                email,
+                password
             }
-        });
-        if (res.status === 200) {
-            const { token, userID } = res.data;
-            await AsyncStorage.setItem(USER_TOKEN, token);
-            await AsyncStorage.setItem(USER_ID, userID);
-
-            return true;
-        } else {
-            return false;
+        },
+        headers: {
+            'Content-Type': 'application/json'
         }
-    } catch (error) {
-        console.log('error: ', error);
-        return false;
-    }
+    });
 };
 
 export const onLogout = async () => {

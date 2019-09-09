@@ -3,13 +3,10 @@ import { View, RefreshControl } from 'react-native';
 import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview';
 import { Block } from 'galio-framework';
 import RenderAd from './RenderAd';
-import NetworkError from '../../components/Error/NetworkError';
 import Loader from '../../components/Loader/Loader';
-import { withAds } from '../../contexts/AdContext';
-import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
 import { width } from '../../config/Constants/Dimensions';
-import SearchEnabledPage from '../../components/SearchEnabledPage';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { AdContext } from '../../contexts/AdContext';
+import RenderSearchBar from '../../components/RenderSearchBar/RenderSearchBar';
 
 const ViewTypes = {
     HALF_LEFT: 1,
@@ -49,35 +46,16 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const { getUser } = this.props.adState;
-        getUser();
+        let ads = this.context;
+        ads.getUser();
     }
 
     renderMainScreen = () => {
-        const {
-            user,
-            adsArr,
-            refreshing,
-            latestFetch,
-            noResultMessage,
-            noResult,
-            cancelSearch,
-            searchEnabled,
-            isFetching
-        } = this.props.adState;
-        const colorContext = this.context;
-        const { color } = colorContext;
-
-        if (searchEnabled) {
-            return <SearchEnabledPage />;
-        }
-
-        if (noResult) {
-            return <NetworkError message={noResultMessage} iconName='magnify-close' cancelSearch={cancelSearch} />;
-        }
+        let ads = this.context;
+        const { adsArr, refreshing, latestFetch } = ads;
 
         if (adsArr.length < 1) {
-            return <Loader color={color} />;
+            return <Loader />;
         }
 
         let dataProvider = new DataProvider((r1, r2) => {
@@ -86,53 +64,43 @@ class Home extends Component {
         let stateDataProvider = dataProvider.cloneWithRows(adsArr);
 
         return (
-            <Block style={{ flex: 1 }}>
-                <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-                    <RecyclerListView
-                        layoutProvider={this._layoutProvider}
-                        dataProvider={stateDataProvider}
-                        rowRenderer={this._rowRenderer}
-                        onEndReachedThreshold={10}
-                        onEndReached={this.renderMore}
-                        renderFooter={this.renderFooter}
-                        scrollViewProps={{
-                            refreshControl: (
-                                <RefreshControl
-                                    refreshing={refreshing}
-                                    onRefresh={async () => {
-                                        await latestFetch(100);
-                                    }}
-                                />
-                            )
-                        }}
-                    />
-                </Block>
+            <Block style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+                <RecyclerListView
+                    layoutProvider={this._layoutProvider}
+                    dataProvider={stateDataProvider}
+                    rowRenderer={this._rowRenderer}
+                    onEndReachedThreshold={10}
+                    onEndReached={this.renderMore}
+                    renderFooter={this.renderFooter}
+                    scrollViewProps={{
+                        refreshControl: (
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={async () => {
+                                    await latestFetch(100);
+                                }}
+                            />
+                        )
+                    }}
+                />
             </Block>
         );
     };
 
     renderFooter = () => {
-        const { isFetching } = this.props.adState;
-        const colorContext = this.context;
-        const { color } = colorContext;
-        //Second view makes sure we don't unnecessarily change height of the list on this event. That might cause indicator to remain invisible
-        //The empty view can be removed once you've fetched all the data
-        return isFetching ? <Loader style={{ margin: 30 }} color={color} /> : <View style={{ height: 60 }} />;
+        let ads = this.context;
+        return ads.isFetching ? <Loader style={{ margin: 30 }} /> : <View style={{ height: 60 }} />;
     };
 
     renderMore = () => {
-        const { searchLastId, fetchMore, searchMore, lastId } = this.props.adState;
+        let ads = this.context;
+        const { fetchMore, lastId } = ads;
         if (lastId) {
             fetchMore();
-        } else if (searchLastId) {
-            searchMore();
         }
     };
 
     _rowRenderer = (type, ad) => {
-        const { user, getUser } = this.props.adState;
-        let { favtAds } = user;
-
         switch (type) {
             case ViewTypes.FULL:
                 return <RenderAd ad={ad} />;
@@ -143,5 +111,5 @@ class Home extends Component {
     };
 }
 
-Home.contextType = ThemeContext;
-export default withAds(Home);
+Home.contextType = AdContext;
+export default Home;

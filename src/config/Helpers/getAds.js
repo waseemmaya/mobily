@@ -30,10 +30,8 @@ export const fetchMoreAds = async (oldLastId) => {
     // this.props.addTask(ads);
 };
 
-export const getTotalAds = async () => {
-    let data = await axios.get(`${API}ads/adscount`);
-    let { adsLength } = data.data;
-    return adsLength;
+export const getTotalAds = () => {
+    return axios.get(`${API}ads/adscount`);
 };
 
 export const searchAds = async (searchQuery) => {
