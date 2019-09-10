@@ -1,9 +1,7 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
-let adState = {
-    adsArr: [],
-    totalAds: 0,
-    lastId: '',
+let initialSearchState = {
+    searchArr: [],
     searchLastId: '',
     searchQuery: '',
     totalQueryAds: 0,
@@ -14,16 +12,21 @@ let adState = {
     searchEnabled: false
 };
 
-const AdContext = createContext(adState);
+export const SearchContext = createContext(initialSearchState);
 
-export const withAds = (Component) => (...props) => {
-    return (
-        <AdContext.Consumer>
-            {(adState) => {
-                return <Component adState={adState} {...props} />;
-            }}
-        </AdContext.Consumer>
-    );
-};
+function SearchContextWrapper(props) {
+    let searchState = {
+        searchArr: [],
+        searchLastId: '',
+        searchQuery: '',
+        totalQueryAds: 0,
+        noResult: false,
+        isFetching: false,
+        refreshing: false,
+        noResultMessage: '',
+        searchEnabled: false
+    };
+    return <SearchContext.Provider value={searchState}>{props.children}</SearchContext.Provider>;
+}
 
-export default AdContext;
+export default SearchContextWrapper;

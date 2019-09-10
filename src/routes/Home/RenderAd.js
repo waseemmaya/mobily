@@ -50,6 +50,8 @@ function RenderAd(props) {
 
             Toast.show({
                 text: `${msg} Favorite.!`,
+                position: 'bottom',
+                type: 'success',
                 duration: 700
             });
             getUser();

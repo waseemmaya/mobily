@@ -27,7 +27,7 @@ function Settings(props) {
         const logoutRes = await onLogout();
 
         if (logoutRes) {
-            return props.navigation.navigate('Login');
+            return props.navigation.navigate('Auth');
         } else {
             alert('something went wrong');
         }
@@ -51,7 +51,7 @@ function Settings(props) {
                         width: 100,
                         backgroundColor: color
                     }}
-                    onPress={() => changeColor(getRandomColor2())}>
+                    onPress={() => changeColor(getRandomColor())}>
                     Get Random Color
                 </Button>
 

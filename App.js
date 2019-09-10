@@ -4,6 +4,7 @@ import { Root } from 'native-base';
 import Navigator from './src/Navigator';
 import AdContextWrapper from './src/contexts/AdContext';
 import { ThemeContext } from './src/contexts/ThemeContext';
+import SearchContextWrapper from './src/contexts/SearchContext';
 
 function App() {
     const themeContext = useContext(ThemeContext);
@@ -12,8 +13,10 @@ function App() {
         <View style={{ flex: 1 }}>
             <Root>
                 <AdContextWrapper>
-                    <StatusBar hidden={false} animated={true} backgroundColor={color} barStyle='dark-content' />
-                    <Navigator />
+                    <SearchContextWrapper>
+                        <StatusBar hidden={false} animated={true} backgroundColor={color} barStyle='dark-content' />
+                        <Navigator />
+                    </SearchContextWrapper>
                 </AdContextWrapper>
             </Root>
         </View>

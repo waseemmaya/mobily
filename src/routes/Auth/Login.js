@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Text, Button, Block } from 'galio-framework';
-import { Image, ScrollView, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Image, ScrollView, TouchableOpacity } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { Toast } from 'native-base';
 import { TextField } from 'react-native-material-textfield';
+import { withNavigation } from 'react-navigation';
 import { onLogin } from '../../config/Helpers/AuthFunctions';
 import Loader from '../../components/Loader/Loader';
 import { ThemeContext } from '../../contexts/ThemeContext';
@@ -10,7 +12,7 @@ import { ThemeContext } from '../../contexts/ThemeContext';
 const USER_TOKEN = 'UserAuthToken';
 const USER_ID = 'UserID';
 
-export default class Login extends Component {
+class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -152,3 +154,5 @@ export default class Login extends Component {
 }
 
 Login.contextType = ThemeContext;
+
+export default withNavigation(Login);

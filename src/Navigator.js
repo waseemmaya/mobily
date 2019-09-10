@@ -3,6 +3,8 @@ import Signup from './routes/Auth/Signup';
 import Login from './routes/Auth/Login';
 import AuthLoading from './routes/Auth/AuthLoading';
 import TabNavigator from './navigators/TabNavigator';
+import AuthTab from './routes/Auth/AuthTab';
+
 const AuthStack = createStackNavigator(
     {
         Login: { screen: Login },
@@ -21,7 +23,7 @@ const AppStack = createStackNavigator(
 const FinalNavigator = createSwitchNavigator(
     {
         AuthLoading,
-        Auth: AuthStack,
+        Auth: AuthTab,
         App: AppStack
     },
     {

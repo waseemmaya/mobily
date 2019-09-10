@@ -10,6 +10,7 @@ import { AdContext } from '../../contexts/AdContext';
 RenderSearchBar = (props) => {
     const themeContext = useContext(ThemeContext);
     const { color } = themeContext;
+
     const adContext = useContext(AdContext);
     const { adsArr, totalAds } = adContext;
 
@@ -39,9 +40,7 @@ RenderSearchBar = (props) => {
                 }}
                 right
                 iconContent={
-                    <TouchableOpacity //         cancelSearch(); //     if (searchQuery.length > 0) { // onPress={() => {
-                    //         disableSearch();
-                    //     }
+                    <TouchableOpacity //     } //         disableSearch(); //         cancelSearch(); //     if (searchQuery.length > 0) { // onPress={() => {
                     // }}
                     styleName='flexible'>
                         <Icon

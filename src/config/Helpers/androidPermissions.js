@@ -1,5 +1,6 @@
 import { PermissionsAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
+import { AsyncStorage } from 'react-native';
 
 const requestCameraPermission = async () => {
     try {

@@ -7,6 +7,7 @@ import {
 } from '../../config/Helpers/androidPermissions';
 import Loader from '../../components/Loader/Loader';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import AuthTab from './AuthTab';
 
 export default class AuthLoading extends React.Component {
     render() {
@@ -24,7 +25,7 @@ export default class AuthLoading extends React.Component {
         const res = await isLoggedin();
         console.log('isLoggedin ---> : ', res);
 
-        navigate(res ? 'Home' : 'Login');
+        navigate(res ? 'Home' : 'Auth');
     };
 }
 
