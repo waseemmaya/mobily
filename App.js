@@ -14,7 +14,7 @@ function App() {
             <Root>
                 <AdContextWrapper>
                     <SearchContextWrapper>
-                        <StatusBar hidden={false} animated={true} backgroundColor={color} barStyle='dark-content' />
+                        <StatusBar hidden={true} animated={true} backgroundColor={color} barStyle='dark-content' />
                         <Navigator />
                     </SearchContextWrapper>
                 </AdContextWrapper>
