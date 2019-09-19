@@ -66,11 +66,11 @@ RenderSearchBar = (props) => {
                             }
                         }}
                         styleName='flexible'>
-                        {/* <Icon
+                        <Icon
                             style={{ fontSize: searchQuery.length > 0 ? 28 : 21, color: grayColor }}
                             name={searchQuery.length > 0 ? 'ios-close' : 'ios-search'}
                             type='Ionicons'
-                        /> */}
+                        />
                     </TouchableOpacity>
                 }
             />

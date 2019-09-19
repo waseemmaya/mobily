@@ -3,7 +3,7 @@ import { withNavigation } from 'react-navigation';
 import { TouchableOpacity } from 'react-native';
 import { Image, View, Text, Caption, Row } from '@shoutem/ui';
 import moment from 'moment';
-import {  Toast } from 'native-base';
+import { Icon, Toast } from 'native-base';
 import axios from 'axios';
 import API from '../../config/API/API';
 import { getUserID } from '../../config/Helpers/AuthFunctions';
@@ -87,7 +87,7 @@ function RenderAd(props) {
                         <Caption>{moment(ad.postedAt).fromNow()}</Caption>
                         <Caption>Rs {ad.price}</Caption>
                         <TouchableOpacity onPress={() => toggleFavt(ad._id)}>
-                            {/* <Icon style={{ fontSize: 21, color: color }} name={iconName} type='Ionicons' /> */}
+                            <Icon style={{ fontSize: 21, color: color }} name={iconName} type='Ionicons' />
                         </TouchableOpacity>
                     </View>
                 </View>

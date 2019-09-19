@@ -20,6 +20,7 @@
 		2DCD954D1E0B4F2C00145EB5 /* mobilyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* mobilyTests.m */; };
 		4085224BC171F14C3AFFA24E /* libPods-mobilyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D7683311F7CE46CACA7AB0 /* libPods-mobilyTests.a */; };
 		6F281397B71B5B36500FFCB8 /* libPods-mobily.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB3460D4FB1470B4FD02F782 /* libPods-mobily.a */; };
+		88068520233391BD002DD814 /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8806851F233391BD002DD814 /* Rubik-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		59E14FC1A639C72B6D925DF1 /* Pods-mobily-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobily-tvOS.release.xcconfig"; path = "Target Support Files/Pods-mobily-tvOS/Pods-mobily-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		7EA064B37334729AEDD90BB0 /* Pods-mobilyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobilyTests.release.xcconfig"; path = "Target Support Files/Pods-mobilyTests/Pods-mobilyTests.release.xcconfig"; sourceTree = "<group>"; };
 		7EEB2352FF7BE3903A7CB863 /* Pods-mobily.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobily.debug.xcconfig"; path = "Target Support Files/Pods-mobily/Pods-mobily.debug.xcconfig"; sourceTree = "<group>"; };
+		8806851F233391BD002DD814 /* Rubik-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Rubik-Regular.ttf"; path = "../../node_modules/@shoutem/ui/fonts/Rubik-Regular.ttf"; sourceTree = "<group>"; };
 		89DCD46DD6DB21355D7BD015 /* Pods-mobily-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobily-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-mobily-tvOS/Pods-mobily-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		9A7D99C25A8F5FDA4A156419 /* Pods-mobilyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobilyTests.debug.xcconfig"; path = "Target Support Files/Pods-mobilyTests/Pods-mobilyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B21453BE558104F8261CD780 /* libPods-mobily-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-mobily-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +161,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8806851E23339169002DD814 /* fonts */,
 				13B07FAE1A68108700A75B9A /* mobily */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* mobilyTests */,
@@ -182,6 +185,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8806851E23339169002DD814 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8806851F233391BD002DD814 /* Rubik-Regular.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		EB2E58C8C3B534D105C29C8A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,7 +205,6 @@
 				9A7D99C25A8F5FDA4A156419 /* Pods-mobilyTests.debug.xcconfig */,
 				7EA064B37334729AEDD90BB0 /* Pods-mobilyTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -286,7 +296,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -338,6 +348,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				88068520233391BD002DD814 /* Rubik-Regular.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
