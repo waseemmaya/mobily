@@ -1,63 +1,61 @@
-import React, { useEffect, useContext } from 'react';
-import { Icon } from 'native-base';
-import { Block, Input, Text } from 'galio-framework';
-import { TouchableOpacity, Keyboard } from 'react-native';
-import { grayColor } from '../../config/Constants/Colors';
-import { width } from '../../config/Constants/Dimensions';
-import { ThemeContext } from '../../contexts/ThemeContext';
-import { AdContext } from '../../contexts/AdContext';
+import React, { useEffect, useContext } from "react";
+import { Icon } from "native-base";
+import { Block, Input, Text } from "galio-framework";
+import { TouchableOpacity, Keyboard } from "react-native";
+import { withNavigation } from "react-navigation";
+import { grayColor } from "../../config/Constants/Colors";
+import { width } from "../../config/Constants/Dimensions";
+import { ThemeContext } from "../../contexts/ThemeContext";
+import { AdContext } from "../../contexts/AdContext";
 
-RenderSearchBar = (props) => {
-    const themeContext = useContext(ThemeContext);
-    const { color } = themeContext;
+RenderSearchBar = props => {
+  const themeContext = useContext(ThemeContext);
+  const { color } = themeContext;
 
-    const adContext = useContext(AdContext);
-    const { adsArr, totalAds } = adContext;
+  const adContext = useContext(AdContext);
+  const { adsArr, totalAds } = adContext;
 
-    keyboardHide = () => {
-        console.warn('hide');
-    };
-    useEffect(() => {
-        Keyboard.addListener('keyboardDidHide', keyboardHide);
-    }, []);
-
-    return (
-        <Block style={{ height: 110, backgroundColor: color }}>
-            <Input
-                // onFocus={enableSearch}
-                // onBlur={disableSearch}
-                // value={searchQuery}
-                placeholder='Search...'
-                borderless
-                placeholderTextColor={grayColor}
-                // onSubmitEditing={search}
-                style={{
-                    borderRadius: 1,
-                    height: 38,
-                    width: width - 32,
-                    marginHorizontal: 14,
-                    marginTop: 10
-                }}
-                right
-                iconContent={
-                    <TouchableOpacity //     } //         disableSearch(); //         cancelSearch(); //     if (searchQuery.length > 0) { // onPress={() => {
-                    // }}
-                    styleName='flexible'>
-                        <Icon
-                            style={{ fontSize: 28, color: grayColor }}
-                            name={false ? 'ios-close' : 'ios-search'}
-                            type='Ionicons'
-                        />
-                    </TouchableOpacity>
-                }
+  return (
+    <Block
+      style={{
+        height: 54,
+        backgroundColor: color
+      }}
+      row
+    >
+      <Block style={{ marginTop: 16, marginLeft: 10 }}>
+        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <Icon
+            style={{ fontSize: 25, color: "white" }}
+            type="Ionicons"
+            name="md-arrow-back"
+          />
+        </TouchableOpacity>
+      </Block>
+      <Input
+        autofocus={true}
+        placeholder="What are you looking for?"
+        borderless
+        placeholderTextColor={grayColor}
+        style={{
+          height: 37,
+          borderRadius: 30,
+          width: width - 46,
+          marginHorizontal: 10
+        }}
+        right
+        iconContent={
+          <TouchableOpacity styleName="flexible">
+            <Icon
+              style={{ fontSize: 22, color: grayColor }}
+              name={true ? "ios-close" : "ios-search"}
+              type="Ionicons"
             />
-            <Block center>
-                <Text style={{ fontSize: 11, color: 'white' }}>
-                    DB : {totalAds} - State : {adsArr.length}
-                </Text>
-            </Block>
-        </Block>
-    );
+          </TouchableOpacity>
+        }
+      />
+    </Block>
+  );
 };
 
-export default RenderSearchBar;
+export default withNavigation(RenderSearchBar);
